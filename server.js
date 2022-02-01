@@ -16,9 +16,9 @@ app.get("/", (req, res) => {
     },
   ];
 
-  res.render("index", { articles }); // <- the shorthand assignment
+  res.render("index", { articles });
 });
 
 app.listen(3001, () => {
-  console.log("Markdown server listening on port 3001");
+  console.log("Holo talent server listening on port 3001");
 });

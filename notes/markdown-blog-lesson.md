@@ -1,4 +1,4 @@
-# Markdown Blog Lesson
+# Markdown Dossier Lesson
 
 ## Tech stack
 
