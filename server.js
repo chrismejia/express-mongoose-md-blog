@@ -1,22 +1,22 @@
 const express = require("express");
-const articleRouter = require("./routes/articleRouter");
+const talentsRouter = require("./routes/talentsRouter");
 
 const app = express();
 
 app.set("view engine", "ejs");
 
-app.use("/articles", articleRouter);
+app.use("/talents", talentsRouter);
 
 app.get("/", (req, res) => {
-  const articles = [
+  const talents = [
     {
-      title: "Test Article",
+      name: "Test Talent",
       date: Date.now(),
-      description: "A short blurb describing this test article.",
+      description: "A short blurb describing this test talent.",
     },
   ];
 
-  res.render("index", { articles });
+  res.render("index", { talents });
 });
 
 app.listen(3001, () => {
