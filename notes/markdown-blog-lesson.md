@@ -21,6 +21,32 @@
 
 - nodemon
 
+## Project goals
+
+- Create a page that showcases all the talents
+- Be able to add new idol talent entries
+- Be able to edit existing idol talent entries
+- Be able to delete existing idol talents
+
+## Planned Idol Entry Fields
+
+- Name
+- Debut
+- Birthday
+- Height
+- Unit Name
+- Unit Members
+- HoloBranch
+- Illustrator
+- FanName
+- Hashtags
+  - Stream
+  - Fan Art
+- YT page link
+- Twitter page link
+- Current Sub Count
+- Current View Total
+
 ## 1. Initialize project
 
 - Start npm project
@@ -304,29 +330,214 @@ We can render a collection of data in `ejs` by wrapping Javascript code in `<% s
   <h1 class="mb-4">Blog talents</h1>
   <a href="/talents/new" class="btn btn-success">New Talent</a>
 
-  // wrapping the forEach in an expression, not an output!
+  // wrapping the .forEach() in an expression, not an output!
+  // Iterating over the `talents` data array using .forEach and then using the single talent object element to grab data values using its keys
   // notice the closing of each tag, per line
 
   <% talents.forEach(talent => { %>
-  <div class="card mt-4"><%= talent.name%></div>
+  <div class="card mt-4"><%= talent.name %></div>
   <% }) %>
 </div>
 ```
 
 ## 12. Fleshing out the article card layout with more components
 
-The
+The `card` component offered by Bootstrap has multiple sub-components available to use.
 
 ```js
 // views/index.ejs
-// expanded card snippet
+// expanded card snippetv
 
 <% talents.forEach(talent => { %>
 <div class="card mt-4">
   <div class="card-body">
     <div class="card-title"><%= talent.name %></div>
-    <div class="card-subtitle text-muted mb-2"><%= talent.date %></div>
+    <div class="card-subtitle text-muted mb-2"><%= talent.debuted %></div>
   </div>
 </div>
 <% }) %>
 ```
+
+Our output is a card component that features the `name`, and `date` values from our test `talents` data we created in the index `GET` route.
+
+## 13. Converting _that_ large number into a readable `Date`
+
+You might notice that the date value is a rather large number; that's because `Date.now()` [static method](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now) outputs the _the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC._
+
+We need to convert to something human-readable, we need to do two things:
+
+1. First, we need to have a `Date` instance available to operate on, instead of the `Number` that `Date.now` outputs; for this we change our test `debuted` value to a `new Date()` instance.
+
+   ```js
+   // server.js
+
+   app.get("/", (req, res) => {
+     const talents = [
+       {
+         name: "Test Talent",
+         debuted: new Date(), // <- change from static method output to instance
+         tagline: "A short blurb describing this first test talent.",
+       },
+       {
+         name: "Test Talent 2",
+         debuted: new Date(), // <- change from static method output to instance
+         tagline: "A short blurb describing this second test talent.",
+       },
+     ];
+
+     res.render("index", { talents });
+   });
+   ```
+
+2. Now that we have a `Date` object instead of a `Number`, we can convert it to something human-readable using the `Date` instance method, [`.toLocaleDateString()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString), a function that formats and outputs the date portion of the datetime value based on the user's locale.
+
+   ```js
+   // index.ejs
+   // the `talents` forEach loop
+
+   <% talents.forEach(talent => { %>
+     <div class="card mt-4">
+       <div class="card-body">
+         <div class="card-title">
+           <%= talent.name %>
+         </div>
+         <div class="card-subtitle text-muted mb-2">
+           <%= talent.debuted.toLocaleDateString() %>
+         </div>
+       </div>
+     </div>
+   <% }) %>
+   ```
+
+## 14. Adding the talent's tagline
+
+Bootstrap has a `card-text` component we can use to render a talent's tagline. We'll also be adding a margin to the bottom using the `mb-2` class.
+
+```js
+// index.ejs
+
+<% talents.forEach(talent => { %>
+<div class="card mt-4">
+  <div class="card-body">
+    <div class="card-title"><%= talent.name %></div>
+    <div class="card-subtitle text-muted mb-2">
+      <%= talent.debuted.toLocaleDateString() %>
+    </div>
+    <div class="card-text mb-2"><%= talent.tagline %></div> // tagline added
+  </div>
+</div>
+<% }) %>
+```
+
+## 15. Creating the `/new` Talents route
+
+It's time to add some functionality to the `New Talent` button.
+
+We will program the route, `/talents/new`, and also create the ejs template for the route.
+
+Remember that `talentsRouter` is mounted on `/talents`, so the route path string is simply `/new`. We then a standard `req/res` callback to `.render()` the desired template; we'll create it in a sec.
+
+```js
+// routes/talentsRouter.js
+
+const express = require("express");
+const router = express.Router();
+
+router.get("/new", (req, res) => {
+  res.render("talents/new");
+});
+
+module.exports = router;
+```
+
+## 16. Refactoring to reflect the talents index
+
+Now, in the `views` folder, we want to create a `talents` sub-directory, and then create `new.ejs` within. But before we build that template, we should move `index.ejs` into the `views/talents` folder as it's the page that lists all the talents available.
+
+Change the base `app.get` index route to render `talents/new` instead.
+
+```js
+// server.js
+
+app.get("/", (req, res) => {
+  // ...test talents array here...
+
+  res.render("talents/index", { talents }); // <- changed render target
+});
+```
+
+## 17. Building the `/talents/new` template base
+
+Copy the index template over and remove all code nested **within** the `container` div, except the `<h1>` tag (change its text to `Add a new talent`). Edit the page title as well.
+
+Once complete, visit `/talents/new` to see the base template render.
+
+```js
+// views/talents/new.ejs
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+
+    <title>Add a new talent</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Add a new talent</h1>
+    </div>
+  </body>
+</html>
+```
+
+## 18. Adding the talent info submission form wrapper
+
+Under the `<h1>` tag, add a `<form>` tag with `action` and `method` attributes.
+
+The `action` attribute details which route the method acts on.
+The `method` attribute details the HTTP method to use. We use `POST` because we are creating something.
+
+```js
+// views/talents/new
+
+<body>
+  <div class="container">
+    <h1>Add a new talent</h1>
+    <form action="/talents" method="POST"></form> // form wrapper added
+  </div>
+</body>
+```
+
+## 19. Routing `/talents/new`
+
+As built in `/views/talents/new`, we're `POST`ing to `/talents`; we can leave the `req/res` callback empty for now.
+
+```js
+// routes/talentsRouter.js
+
+const express = require("express");
+const router = express.Router();
+
+router.get("/new", (req, res) => {
+  res.render("talents/new");
+});
+
+router.post("/", (req, res) => {}); // cover POST to `talents` index
+
+module.exports = router;
+```
+
+## 20. Partials (view): reusable components
+
+https://youtu.be/1NrHkjlWVhM?t=1241
+
+Going back to project goals, we see that there are a lot of fields to fill out

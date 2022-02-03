@@ -12,21 +12,13 @@
       crossorigin="anonymous"
     />
 
-    <title>Holo Talent Server</title>
+    <title>Add a new talent</title>
   </head>
   <body>
     <div class="container">
-      <h1 class="mb-4">Our Talents</h1>
-      <a href="/articles/new" class="btn btn-success">New Talent</a>
+      <h1>Add a new talent</h1>
 
-      <% talents.forEach(talent => { %>
-      <div class="card mt-4">
-        <div class="card-body">
-          <div class="card-title"><%= talent.name %></div>
-          <div class="card-subtitle text-muted mb-2"><%= talent.date %></div>
-        </div>
-      </div>
-      <% }) %>
+      <form action="/talents" method="POST"></form>
     </div>
   </body>
 </html>

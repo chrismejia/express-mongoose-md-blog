@@ -11,12 +11,17 @@ app.get("/", (req, res) => {
   const talents = [
     {
       name: "Test Talent",
-      date: Date.now(),
-      description: "A short blurb describing this test talent.",
+      debuted: new Date(),
+      tagline: "A short blurb describing this first test talent.",
+    },
+    {
+      name: "Test Talent 2",
+      debuted: new Date(),
+      tagline: "A short blurb describing this second test talent.",
     },
   ];
 
-  res.render("index", { talents });
+  res.render("talents/index", { talents });
 });
 
 app.listen(3001, () => {
