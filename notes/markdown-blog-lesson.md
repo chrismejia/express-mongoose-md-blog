@@ -30,20 +30,25 @@
 
 ## Planned Idol Entry Fields
 
+### Required
+
 - Name
 - Debut
-- Birthday
-- Height
 - Unit Name
 - Unit Members
+- YT page link
+- Twitter page link
+
+### Optional extras
+
+- Birthday
+- Height
 - HoloBranch
 - Illustrator
 - FanName
 - Hashtags
   - Stream
   - Fan Art
-- YT page link
-- Twitter page link
 - Current Sub Count
 - Current View Total
 
@@ -536,8 +541,39 @@ router.post("/", (req, res) => {}); // cover POST to `talents` index
 module.exports = router;
 ```
 
-## 20. Partials (view): reusable components
+## 20. Partial views: reusable components
 
 https://youtu.be/1NrHkjlWVhM?t=1241
 
-Going back to project goals, we see that there are a lot of fields to fill out
+Going back to project goals, we see that there are a lot of fields that _each_ idol will have to fill out to build their profile in our app.
+
+> ### Planned Idol Entry Fields
+>
+> #### Required
+>
+> - Name
+> - Debut
+> - Unit Name
+> - Unit Members
+> - YT page link
+> - Twitter page link
+>
+> _Optional fields omitted for now; can be added later on as bonus features._
+
+That means that every idol will have these six core fields.
+
+### DRY and Partials
+
+We can use this fact to reduce the amount of code we need to handle by creating a reusable component, aka a partial (view).
+
+#### Partials Syntax
+
+**File Names:** Best practice is to denote a partial with a starting `_` in its file name; in this case, we'll name this partial, `_formFields.ejs`.
+
+**EJS Syntax:** The way you tell EJS to render out the HTML of a partial view is like so:
+
+```js
+<%- include("./relative/filePath/here") %>
+```
+
+## 21. Building the `_formFields.ejs` partial view
