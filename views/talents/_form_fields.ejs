@@ -1,0 +1,110 @@
+<div class="form-group">
+  <label for="name" class="form-label">Talent Name</label>
+  <input required type="text" name="name" id="name" class="form-control" />
+</div>
+
+<div class="form-group">
+  <div class="row">
+    <div class="col">
+      <label for="debut-month" class="form-label">Debut Month</label>
+      <input
+        required
+        type="number"
+        min="1"
+        max="12"
+        name="month"
+        id="month"
+        class="form-control"
+      />
+    </div>
+    <div class="col">
+      <label for="debut-day" class="form-label">Debut Day</label>
+      <input
+        required
+        type="number"
+        min="1"
+        max="31"
+        name="day"
+        id="day"
+        class="form-control"
+      />
+    </div>
+    <div class="col">
+      <label for="debut-year" class="form-label">Debut Year</label>
+      <input
+        required
+        type="number"
+        min="2017"
+        max="2022"
+        name="year"
+        id="year"
+        class="form-control"
+      />
+    </div>
+  </div>
+</div>
+
+<div class="form-group">
+  <label for="unit-name" class="form-label">Talent's Unit</label>
+  <select name="unit-name" id="unit-name" class="form-select">
+    <optgroup label="Hololive JP">
+      <option value="Gen 0">Gen 0</option>
+      <option value="1st Gen">1st Gen</option>
+      <option value="2nd Gen">2nd Gen</option>
+      <option value="GAMERS">GAMERS</option>
+      <option value="3rd Gen - HoloFantasy">3rd Gen - HoloFantasy</option>
+      <option value="4th Gen - HoloForce">4th Gen - HoloForce</option>
+      <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
+      <option value="6th Gen - Secret Society holoX">
+        6th Gen - Secret Society holoX
+      </option>
+    </optgroup>
+    <optgroup label="Hololive Indonesia">
+      <option value="ID 1st Gen - Area 15">ID 1st Gen - Area 15</option>
+      <option value="ID 2nd Gen - holoro">ID 2nd Gen - holoro</option>
+    </optgroup>
+    <optgroup label="Hololive English">
+      <option value="Myth">Myth</option>
+      <option value="Project: HOPE">Project: HOPE</option>
+      <option value="Council">Council</option>
+    </optgroup>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="yt-link" class="form-label">YouTube Page</label>
+  <input
+    required
+    type="text"
+    name="yt-link"
+    id="yt-link"
+    class="form-control"
+  />
+</div>
+
+<div class="form-group">
+  <label for="twitter-link" class="form-label">Twitter Page</label>
+  <input
+    required
+    type="text"
+    name="twitter-link"
+    id="twitter-link"
+    class="form-control"
+  />
+</div>
+
+<div class="form-group">
+  <label for="markdown" class="form-label">Talent Bio Blurb</label>
+  <textarea
+    placeholder="You can use markdown here to style this talent's bio blurb!"
+    name="markdown"
+    id="markdown"
+    class="form-control"
+    rows="5"
+  ></textarea>
+</div>
+
+<div class="form-group">
+  <button type="submit" class="btn btn-primary">Save</button>
+  <a href="/" class="btn btn-secondary">Cancel</a>
+</div>

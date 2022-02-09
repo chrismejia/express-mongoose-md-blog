@@ -33,11 +33,11 @@
 ### Required
 
 - Name
-- Debut
+- Debut Date
 - Unit Name
 - Unit Members
 - YT page link
-- Twitter page link
+- Twitter page link- Talent bio blurb
 
 ### Optional extras
 
@@ -547,30 +547,13 @@ module.exports = router;
 
 Partials are components that allow you to reuse the same HTML across multiple views. Think of partials as functions, they make large websites easier to maintain as you don’t have to go and change a piece of text in every page it appears in. Instead, you define that reusable bundle of code in a file andinclude it wherever you need it.
 
-### Planned Idol Entry Fields
-
-Going back to project goals, we see that there are a lot of fields that _each_ talent will have to fill out to build their profile in our app.
-
-> #### Required
->
-> - Name
-> - Debut
-> - Unit Name
-> - Unit Members
-> - YT page link
-> - Twitter page link
->
-> _Optional fields omitted for now; can be added later on as bonus features._
-
-That means that every talent will have these six core fields.
-
 ### DRY and Partials
 
 We can use this fact to reduce the amount of code we need to handle by creating a reusable component, aka a partial (view).
 
 #### Partials Syntax
 
-**File Names:** Best practice is to denote a partial with a starting `_` in its file name; in this case, we'll name this partial, `_formFields.ejs`.
+**File Names:** Best practice is to denote a partial with a starting `_` in its file name; in this case, we'll name this partial, `_form_fields.ejs`.
 
 **EJS Syntax:** The way you tell EJS to render out the HTML of a partial view is like so:
 
@@ -578,6 +561,69 @@ We can use this fact to reduce the amount of code we need to handle by creating 
 <%- include("./relative/filePath/here") %>
 ```
 
-## 21. Building the `_formFields.ejs` partial view
+## 21. Determining the input types for each required field
 
-Partials
+Going back to project goals, we see that there are a lot of fields that _each_ talent will have to fill out to build their profile in our app.
+
+> #### Required
+>
+> - Name
+> - Debut Date
+> - Unit Name
+> - Unit Members
+> - YT page link
+> - Twitter page link
+> - Talent bio blurb
+>
+> _Optional fields omitted for now; can be added later on as bonus features._
+
+That means that every talent will have these six core fields.
+
+### Name
+
+- expecting a regular string
+- single `<input>` field of type `'text'`
+
+### Date
+
+- we can form dates using `new Date(YYYY, MM - 1, DD)`
+- a input group made of 3 `<input>` fields of type `'number'`
+  - we can add attributes for `min` and `max` number values (stringified), per month, day, year limitations
+
+### Unit Name
+
+- choosing a predefined option would be best
+- single `<select>` element listing all current holopro units
+
+### Unit members
+
+- not something we should designate directly
+- should become associated with other existing talents in their automatically at document creation time
+
+### YT Page Link
+
+- expecting a regular string
+- single `<input>` field of type `'text'`
+
+### Twitter Page Link
+
+- expecting a regular string
+- single `<input>` field of type `'text'`
+
+## 22. Building the `_form_fields.ejs` partial view
+
+Partials are denoted with a preceding `_` in their name.
+
+The file itself will contain different _unwrapped_ HTML elements that make up the fields of our form.
+
+## 23. Using the `_form_fields` partial
+
+We can now use our `_form_fields` partial inside the `<form>` tag in `talents/new`:
+
+```js
+// talents/new.ejs
+
+<form action="/talents" method="POST">
+  <%- include("_formFields") %> //
+</form>
+```
