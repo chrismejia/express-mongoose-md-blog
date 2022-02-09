@@ -24,9 +24,9 @@
 ## Project goals
 
 - Create a page that showcases all the talents
-- Be able to add new idol talent entries
-- Be able to edit existing idol talent entries
-- Be able to delete existing idol talents
+- Be able to add new talent entries
+- Be able to edit existing talent entries
+- Be able to delete existing talents
 
 ## Planned Idol Entry Fields
 
@@ -198,7 +198,7 @@ app.listen(3001, () => {
 });
 ```
 
-## 7. Passing article data from express to ejs template
+## 7. Passing talent data from express to ejs template
 
 In `server.js`, we can pass an additional argument to the index render, the talents data (which has not yet been established). This second render argument is an object with an `talents` variable that serves as both key name and key-value.
 
@@ -229,9 +229,9 @@ That `text` variable and data will now be available in the `index.ejs` file for 
 </html>
 ```
 
-## 8. Mocking article data
+## 8. Mocking talent data
 
-In `server.js`, create mock article data within the index route callback. The `talents` data we'll be expecting to receive will be an array of objects, each of which will contain at least a `title`, `date`, and `description`.
+In `server.js`, create mock talent data within the index route callback. The `talents` data we'll be expecting to receive will be an array of objects, each of which will contain at least a `title`, `date`, and `description`.
 
 Next, replace the `text` server variable with this new `talents` variable. You can use shorthand object assignment here:
 
@@ -241,9 +241,9 @@ Next, replace the `text` server variable with this new `talents` variable. You c
 app.get("/", (req, res) => {
   const talents = [
     {
-      title: "Test Article",
+      title: "Test Idol",
       date: Date.now(),
-      description: "A short blurb describing this test article.",
+      description: "A short blurb describing this test talent.",
     },
   ];
 
@@ -265,7 +265,7 @@ We can reflect this new data in `index.ejs` by replacing the variable. Note that
     <title>Holo Talent Server</title>
   </head>
   <body>
-    <h1><%= talents %></h1> <!-- calling the talents variable; will currently render `[object Object]` -->
+    <h1><%= talents %></h1> <!-- EJS outputting the `talents` variable; will currently render `[object Object]` -->
   </body>
 </html>
 ```
@@ -345,7 +345,7 @@ We can render a collection of data in `ejs` by wrapping Javascript code in `<% s
 </div>
 ```
 
-## 12. Fleshing out the article card layout with more components
+## 12. Fleshing out the talent card layout with more components
 
 The `card` component offered by Bootstrap has multiple sub-components available to use.
 
@@ -543,12 +543,14 @@ module.exports = router;
 
 ## 20. Partial views: reusable components
 
-https://youtu.be/1NrHkjlWVhM?t=1241
+### What is a partial view?
 
-Going back to project goals, we see that there are a lot of fields that _each_ idol will have to fill out to build their profile in our app.
+Partials are components that allow you to reuse the same HTML across multiple views. Think of partials as functions, they make large websites easier to maintain as you don’t have to go and change a piece of text in every page it appears in. Instead, you define that reusable bundle of code in a file andinclude it wherever you need it.
 
-> ### Planned Idol Entry Fields
->
+### Planned Idol Entry Fields
+
+Going back to project goals, we see that there are a lot of fields that _each_ talent will have to fill out to build their profile in our app.
+
 > #### Required
 >
 > - Name
@@ -560,7 +562,7 @@ Going back to project goals, we see that there are a lot of fields that _each_ i
 >
 > _Optional fields omitted for now; can be added later on as bonus features._
 
-That means that every idol will have these six core fields.
+That means that every talent will have these six core fields.
 
 ### DRY and Partials
 
@@ -577,3 +579,5 @@ We can use this fact to reduce the amount of code we need to handle by creating 
 ```
 
 ## 21. Building the `_formFields.ejs` partial view
+
+Partials
