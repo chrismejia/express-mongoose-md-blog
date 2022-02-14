@@ -11,8 +11,6 @@
 
 ### Regular
 
-<!--  -->
-
 - ejs
 - express
 - mongoose
@@ -37,7 +35,8 @@
 - Unit Name
 - Unit Members
 - YT page link
-- Twitter page link- Talent bio blurb
+- Twitter page link
+- Talent bio blurb
 
 ### Optional extras
 
@@ -62,6 +61,7 @@
 
 ## 2. Connecting Express
 
+- Create base `server.js` file
 - Import Express
 - Create Express instance
 - Listen to app on port of choice
@@ -120,7 +120,7 @@ app.listen(3001, () => {
 
 ## 5. Rendering the index view page
 
-Create the folder `views` and within, create `index.ejs`. In that file, typing `!` should bring up the emmet for HTML5 to give boilerplate code.
+Create the folder `views` and within, create `index.ejs`. In that file, if you have the `EJS` VSCode extension already installed, typing `!` should bring up the emmet for HTML5 to give boilerplate code.
 
 ```js
 // views/index.ejs
@@ -586,9 +586,13 @@ That means that every talent will have these six core fields.
 
 ### Date
 
-- we can form dates using `new Date(YYYY, MM - 1, DD)`
+- we can form dates using `new Date(YYYY, MM - 1, DD)` as shown in the test talent data
 - a input group made of 3 `<input>` fields of type `'number'`
   - we can add attributes for `min` and `max` number values (stringified), per month, day, year limitations
+
+OR
+
+- we can use a single `<input>` of type`'date'`
 
 ### Unit Name
 
@@ -599,22 +603,33 @@ That means that every talent will have these six core fields.
 
 - not something we should designate directly
 - should become associated with other existing talents in their automatically at document creation time
+- therefore not an inputtable field
 
 ### YT Page Link
 
 - expecting a regular string
 - single `<input>` field of type `'text'`
 
+OR
+
+- single `<input>` field of type `'URL'` to verify url pattern
+
 ### Twitter Page Link
 
 - expecting a regular string
 - single `<input>` field of type `'text'`
+
+OR
+
+- single `<input>` field of type `'URL'` to verify url pattern
 
 ## 22. Building the `_form_fields.ejs` partial view
 
 Partials are denoted with a preceding `_` in their name.
 
 The file itself will contain different _unwrapped_ HTML elements that make up the fields of our form.
+
+## 22a.
 
 ## 23. Using the `_form_fields` partial
 
