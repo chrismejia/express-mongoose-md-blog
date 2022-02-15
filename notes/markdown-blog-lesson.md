@@ -508,16 +508,19 @@ Once complete, visit `/talents/new` to see the base template render.
 
 Under the `<h1>` tag, add a `<form>` tag with `action` and `method` attributes.
 
-The `action` attribute details which route the method acts on.
-The `method` attribute details the HTTP method to use. We use `POST` because we are creating something.
+- The `action` attribute details which route the method acts on.
+- The `method` attribute details the HTTP method to use. We use `POST` because we are creating something; posting a new Idol document to our database.
 
-```js
-// views/talents/new
+```html
+<!-- views/talents/new -->
 
 <body>
   <div class="container">
     <h1>Add a new talent</h1>
-    <form action="/talents" method="POST"></form> // form wrapper added
+
+    <form action="/talents" method="POST">
+      <!-- form fields to be nested within -->
+    </form>
   </div>
 </body>
 ```
@@ -577,7 +580,17 @@ Going back to project goals, we see that there are a lot of fields that _each_ t
 >
 > _Optional fields omitted for now; can be added later on as bonus features._
 
-That means that every talent will have these six core fields.
+That means that every talent will have these seven core fields.
+
+### How Bootstrap organizes forms
+
+Bootstrap provides a number of form related classes to style form components.
+
+- `.form-control` [(docs)](https://getbootstrap.com/docs/4.0/components/forms/#form-controls): provides the styling to text form inputs; `<input>`, `<select>`,`<textarea>`, etc.
+- `.form-group` [(docs)](https://getbootstrap.com/docs/4.0/components/forms/#form-groups): allows for proper grouping of single form entry field's elements, like a `<label>`, `<input>`, `<textarea>`, `<select>`, and others.
+- `.form-control` [(docs)]():
+
+Each `<input>` in our form
 
 ### Name
 
@@ -592,7 +605,7 @@ That means that every talent will have these six core fields.
 
 OR
 
-- we can use a single `<input>` of type`'date'`
+- we can use a single `<input>` of type `'date'`
 
 ### Unit Name
 
