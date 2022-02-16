@@ -1,26 +1,23 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const talentsRouter = require("./routes/talentsRouter");
+const talents = require("./__test__/test_talents");
 
 const app = express();
+
+mongoose.connect("mongodb://localhost/holoproTalents", () => {
+  console.log("Connected to holoproTalents DB!"),
+    (err) => {
+      console.error("holoproTalents DB error:");
+      console.error(err);
+    };
+});
 
 app.set("view engine", "ejs");
 
 app.use("/talents", talentsRouter);
 
 app.get("/", (req, res) => {
-  const talents = [
-    {
-      name: "Test Talent",
-      debuted: new Date(2018, 9, 12),
-      tagline: "A short blurb describing this first test talent.",
-    },
-    {
-      name: "Test Talent 2",
-      debuted: new Date(2021, 10, 11),
-      tagline: "A short blurb describing this second test talent.",
-    },
-  ];
-
   res.render("talents/index", { talents });
 });
 
