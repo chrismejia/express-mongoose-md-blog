@@ -1,5 +1,70 @@
 # 1. Markdown Dossier Lesson
 
+- [1. Markdown Dossier Lesson](#1-markdown-dossier-lesson)
+  - [1.1. Tech stack](#11-tech-stack)
+  - [1.2. Dependencies](#12-dependencies)
+    - [1.2.1. Regular](#121-regular)
+    - [1.2.2. Development](#122-development)
+  - [1.3. Project goals](#13-project-goals)
+  - [1.4. Planned Idol Entry Fields](#14-planned-idol-entry-fields)
+    - [1.4.1. Required](#141-required)
+    - [1.4.2. Optional extras](#142-optional-extras)
+  - [1.5. Initialize project](#15-initialize-project)
+  - [1.6. Connecting Express](#16-connecting-express)
+  - [1.7. Establishing index route](#17-establishing-index-route)
+  - [1.8. Rendering templates by setting the view engine](#18-rendering-templates-by-setting-the-view-engine)
+  - [1.9. Rendering the index view page](#19-rendering-the-index-view-page)
+  - [1.10. Establishing first route](#110-establishing-first-route)
+  - [1.11. Passing talent data from express to ejs template](#111-passing-talent-data-from-express-to-ejs-template)
+  - [1.12. Mocking talent data](#112-mocking-talent-data)
+  - [1.13. Importing Bootstrap as our CSS framework](#113-importing-bootstrap-as-our-css-framework)
+    - [1.13.1. What is bootstrap?](#1131-what-is-bootstrap)
+  - [1.14. Assembling the basic index landing page header section](#114-assembling-the-basic-index-landing-page-header-section)
+  - [1.15. Iterating through `talents` data set to render each element](#115-iterating-through-talents-data-set-to-render-each-element)
+  - [1.16. Fleshing out the talent card layout with more components](#116-fleshing-out-the-talent-card-layout-with-more-components)
+  - [1.17. Extracting and re-sourcing our test data](#117-extracting-and-re-sourcing-our-test-data)
+  - [1.18. Converting _that_ large number into a readable `Date`](#118-converting-that-large-number-into-a-readable-date)
+  - [1.19. Adding the talent's tagline](#119-adding-the-talents-tagline)
+  - [1.20. Creating the `/new` Talents route](#120-creating-the-new-talents-route)
+  - [1.21. Refactoring to reflect the talents index](#121-refactoring-to-reflect-the-talents-index)
+  - [1.22. Building the `/talents/new` template base](#122-building-the-talentsnew-template-base)
+  - [1.23. Adding the talent info submission form wrapper](#123-adding-the-talent-info-submission-form-wrapper)
+  - [1.24. Routing `/talents/new`](#124-routing-talentsnew)
+  - [1.25. Partial views: reusable components](#125-partial-views-reusable-components)
+    - [1.25.1. What is a partial view?](#1251-what-is-a-partial-view)
+    - [1.25.2. DRY and Partials](#1252-dry-and-partials)
+    - [1.25.3. Partials Syntax](#1253-partials-syntax)
+  - [1.26. Determining the input types for each required field](#126-determining-the-input-types-for-each-required-field)
+    - [1.26.1. Name](#1261-name)
+    - [1.26.2. Date](#1262-date)
+    - [1.26.3. Unit Name](#1263-unit-name)
+    - [1.26.4. YT Page Link](#1264-yt-page-link)
+    - [1.26.5. Twitter Page Link](#1265-twitter-page-link)
+  - [1.27. Building the `_form_fields.ejs` partial view](#127-building-the-_form_fieldsejs-partial-view)
+    - [1.27.1. Talent Name](#1271-talent-name)
+    - [1.27.2. Debut Date](#1272-debut-date)
+    - [1.27.3. Greetings & Introduction](#1273-greetings--introduction)
+    - [1.27.4. Unit Name](#1274-unit-name)
+    - [1.27.5. YouTube Page](#1275-youtube-page)
+    - [1.27.6. Twitter Page](#1276-twitter-page)
+    - [1.27.7. Talent Bio Blurb](#1277-talent-bio-blurb)
+    - [1.27.8. Form submission buttons](#1278-form-submission-buttons)
+    - [1.27.9. All put together](#1279-all-put-together)
+  - [1.28. Using the `_form_fields` partial](#128-using-the-_form_fields-partial)
+  - [1.29. Establishing our app's connection to MongoDB via `mongoose`](#129-establishing-our-apps-connection-to-mongodb-via-mongoose)
+  - [1.30. Defining the `Talent` model](#130-defining-the-talent-model)
+    - [1.30.1. Our form fields (the required ones)](#1301-our-form-fields-the-required-ones)
+    - [1.30.2. Adding `createdAt` & `updatedAt` document timestamps](#1302-adding-createdat--updatedat-document-timestamps)
+  - [1.31. `POST`ing to `/`; steps of the a new `Talent` document submission](#131-posting-to--steps-of-the-a-new-talent-document-submission)
+    - [1.31.1. Giving `express` the ability to read data from forms](#1311-giving-express-the-ability-to-read-data-from-forms)
+    - [1.31.2. Reading the submitted form data (seeing `.urlencoded()` in action)](#1312-reading-the-submitted-form-data-seeing-urlencoded-in-action)
+    - [1.31.3. New `Talent` prep & deconstructing this `POST`'s `req.body`](#1313-new-talent-prep--deconstructing-this-posts-reqbody)
+    - [1.31.4. Converting the `year`, `month`, and `day` values to a single `Date` value for `debutDate`](#1314-converting-the-year-month-and-day-values-to-a-single-date-value-for-debutdate)
+    - [1.31.5. Creating a new `Talent`](#1315-creating-a-new-talent)
+  - [1.32. Handling the success/failure of the new `Talent` entry](#132-handling-the-successfailure-of-the-new-talent-entry)
+  - [1.33. Telling `/talents/new` to use a new, blank Talent as default values on page load](#133-telling-talentsnew-to-use-a-new-blank-talent-as-default-values-on-page-load)
+  - [1.34. Setting up a placeholder for param route `/talents/:id` on PASS `Talent` submission](#134-setting-up-a-placeholder-for-param-route-talentsid-on-pass-talent-submission)
+
 ## 1.1. Tech stack
 
 - NodeJS
@@ -33,7 +98,6 @@
 - Name
 - Debut Date
 - Unit Name
-- Unit Members
 - YT page link
 - Twitter page link
 - Talent bio blurb
@@ -42,7 +106,7 @@
 
 - Birthday
 - Height
-- HoloBranch
+- HoloBranch (JP, EN, ID)
 - Illustrator
 - FanName
 - Hashtags
@@ -50,6 +114,7 @@
   - Fan Art
 - Current Sub Count
 - Current View Total
+- Unit Members (5-star challenge)
 
 ## 1.5. Initialize project
 
@@ -625,7 +690,6 @@ Going back to project goals, we see that there are a lot of fields that _each_ t
 > - Name
 > - Debut Date
 > - Unit Name
-> - Unit Members
 > - YT page link
 > - Twitter page link
 > - Talent bio blurb
@@ -654,13 +718,7 @@ OR
 - choosing a predefined option would be best
 - single `<select>` element listing all current holopro units
 
-### 1.26.4. Unit members
-
-- not something we should designate directly
-- should become associated with other existing talents in their automatically at document creation time
-- therefore not an inputtable field
-
-### 1.26.5. YT Page Link
+### 1.26.4. YT Page Link
 
 - expecting a regular string
 - single `<input>` field of type `'text'`
@@ -669,7 +727,7 @@ OR
 
 - single `<input>` field of type `'URL'` to verify url pattern
 
-### 1.26.6. Twitter Page Link
+### 1.26.5. Twitter Page Link
 
 - expecting a regular string
 - single `<input>` field of type `'text'`
@@ -732,65 +790,84 @@ A `form-group` wrapping three sets of `label` for a required `input` of type `nu
 </div>
 ```
 
-### 1.27.3. Unit Name
+### 1.27.3. Greetings & Introduction
+
+A `form-group` wrapping a `label` for a required `input` of type `text`.
+
+```js
+<div class="form-group">
+  <label for="tagline" class="form-label">
+    Talent Name
+  </label>
+  <input
+    required
+    type="text"
+    name="tagline"
+    id="tagline"
+    class="form-control"
+  />
+</div>
+```
+
+### 1.27.4. Unit Name
 
 A `form-group` wrapping a `label` for a required `select` dropdown menu that itself contains the different Holopro unit names as `option` to select from.
 
 ```html
 <div class="form-group">
-  <label for="unit-name" class="form-label">Talent's Unit</label>
-  <select name="unit-name" id="unit-name" class="form-select">
+  <label for="unitName" class="form-label">Talent's Unit</label>
+  <select name="unitName" id="unitName" class="form-select">
     <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
   </select>
 </div>
 ```
 
-### 1.27.4. YouTube Page
+### 1.27.5. YouTube Page
 
 A `form-group` wrapping a `label` for a required `input` of type `text`.
 
 ```html
 <div class="form-group">
-  <label for="yt-link" class="form-label">YouTube Page</label>
+  <label for="youtube" class="form-label">YouTube Page</label>
   <input
     required
     type="text"
-    name="yt-link"
-    id="yt-link"
+    name="youtube"
+    id="youtube"
     class="form-control"
   />
 </div>
 ```
 
-### 1.27.5. Twitter Page
+### 1.27.6. Twitter Page
 
 A `form-group` wrapping a `label` for a required `input` of type `text`.
 
 ```html
 <div class="form-group">
-  <label for="twitter-link" class="form-label">Twitter Page</label>
+  <label for="twitter" class="form-label">Twitter Page</label>
   <input
     required
     type="text"
-    name="twitter-link"
-    id="twitter-link"
+    name="twitter"
+    id="twitter"
     class="form-control"
   />
 </div>
 ```
 
-### 1.27.6. Talent Bio Blurb
+### 1.27.7. Talent Bio Blurb
 
 A `form-group` wrapping a `label` for a required `textarea`.
 
 ```html
 <div class="form-group">
-  <label for="markdown" class="form-label">Talent Bio Blurb</label>
-  <textarea name="markdown" id="markdown" class="form-control"></textarea>
+  <label for="bioBlurb" class="form-label">Talent Bio Blurb</label>
+  <textarea name="bioBlurb" id="bioBlurb" class="form-control"></textarea>
 </div>
 ```
 
-### 1.27.7. Form submission buttons
+### 1.27.8. Form submission buttons
 
 A `form-group` wrapping a `button` to `submit` all the form field data and a `link` to return back to the `index` page.
 
@@ -801,7 +878,7 @@ A `form-group` wrapping a `button` to `submit` all the form field data and a `li
 </div>
 ```
 
-### 1.27.8. All put together
+### 1.27.9. All put together
 
 ```html
 <!-- views/talents/_form_fields.ejs -->
@@ -812,7 +889,7 @@ A `form-group` wrapping a `button` to `submit` all the form field data and a `li
 </div>
 
 <div class="form-group">
-  <label for="debut-month" class="form-label">Debut Month</label>
+  <label for="month" class="form-label">Debut Month</label>
   <input
     required
     type="number"
@@ -823,7 +900,7 @@ A `form-group` wrapping a `button` to `submit` all the form field data and a `li
     class="form-control"
   />
 
-  <label for="debut-day" class="form-label">Debut Day</label>
+  <label for="day" class="form-label">Debut Day</label>
   <input
     required
     type="number"
@@ -834,7 +911,7 @@ A `form-group` wrapping a `button` to `submit` all the form field data and a `li
     class="form-control"
   />
 
-  <label for="debut-year" class="form-label">Debut Year</label>
+  <label for="year" class="form-label">Debut Year</label>
   <input
     required
     type="number"
@@ -847,43 +924,37 @@ A `form-group` wrapping a `button` to `submit` all the form field data and a `li
 </div>
 
 <div class="form-group">
-  <label for="unit-name" class="form-label">Talent's Unit</label>
-  <select name="unit-name" id="unit-name" class="form-select">
+  <label for="unitName" class="form-label">Talent's Unit</label>
+  <select name="unitName" id="unitName" class="form-select">
     <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
   </select>
 </div>
 
 <div class="form-group">
-  <label for="yt-link" class="form-label">YouTube Page</label>
+  <label for="youtube" class="form-label">YouTube Page</label>
   <input
     required
     type="text"
-    name="yt-link"
-    id="yt-link"
+    name="youtube"
+    id="youtube"
     class="form-control"
   />
 </div>
 
 <div class="form-group">
-  <label for="twitter-link" class="form-label">Twitter Page</label>
+  <label for="twitter" class="form-label">Twitter Page</label>
   <input
     required
     type="text"
-    name="twitter-link"
-    id="twitter-link"
+    name="twitter"
+    id="twitter"
     class="form-control"
   />
 </div>
 
 <div class="form-group">
-  <label for="markdown" class="form-label">Talent Bio Blurb</label>
-  <textarea
-    placeholder="You can use markdown here to style this talent's bio blurb!"
-    name="markdown"
-    id="markdown"
-    class="form-control"
-    rows="5"
-  ></textarea>
+  <label for="bioBlurb" class="form-label">Talent Bio Blurb</label>
+  <textarea name="bioBlurb" id="bioBlurb" class="form-control"></textarea>
 </div>
 
 <div class="form-group">
@@ -954,9 +1025,9 @@ Make a top-level directory, `models/`, and create the `Talent.js` model file. To
 
 - Name: `String`, required
 - Debut Date: `Date`, required
+- Tagline: `String`, required
 - Unit Name: `String`, required
   - enum (one of the following): [`"<whichever gen corresponds to selected Talent>"`]
-- Unit Members: Array of `mongoose.SchemaTypes.ObjectId`, referring to the Talent model
 - YT page link: `String`, required
 - Twitter page link: `String`, required
 - Talent bio blurb: `String`, required
@@ -976,8 +1047,8 @@ const talentSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     debutDate: { type: Date, required: true },
+    tagline: { type: String, required: true },
     unitName: { type: String, required: true, enum: ["5th Gen - NePoLaBo"] },
-    unitMembers: { type: [mongoose.SchemaTypes.ObjectId], ref: "Talent" },
     youtube: { type: String, required: true },
     twitter: { type: String, required: true },
     bioBlurb: { type: String, required: true },
@@ -988,7 +1059,7 @@ const talentSchema = new mongoose.Schema(
 module.exports = mongoose.model("Talent", talentSchema);
 ```
 
-## 1.31. `POST`ing to `/`, processing a `Talent` document submission
+## 1.31. `POST`ing to `/`; steps of the a new `Talent` document submission
 
 To recap, we have a `<form>` wrapper on `new.ejs` with an `action` pointed to the `talents` index, a Save submit `<button>` in the `_form_fields` partial, and a placeholder `POST` route in `talentsRouter`:
 
@@ -1011,11 +1082,188 @@ To recap, we have a `<form>` wrapper on `new.ejs` with an `action` pointed to th
 router.post("/", (req, res) => {});
 ```
 
+There are a number of steps that need to be completed here in order for a submission to be properly completed.
+
+1. Giving `express` the ability to read data from forms
+2. Reading the submitted form data
+3. Pre-processing certain form fields to match the `Talent` model's types
+
+   1. Converting the three separate string `year`, `month`, and `day` values to a single `Date` value for `debutDate`
+
+4. Creation of a `new` `Talent` instance using its model (not a `.create()` call!)
+
+---
+
+### 1.31.1. Giving `express` the ability to read data from forms
+
+All the pieces are now in place for the `/talents` POST route. Since we're using the form's submitted data to talk to the DB, we need to tell Express to use `.urlencoded()` so that we can ready that data off of the `body` of the request.
+
+**NB: Remember that the order of declarations matters! Add the `app.use(express.urlencoded())` call _before_ any router mounts or index routes!**
+
+```js
+// server.js
+
+const express = require("express");
+const mongoose = require("mongoose");
+const talentsRouter = require("./routes/talentsRouter");
+const talents = require("./__test__/test_talents");
+
+const app = express();
+
+app.set("view engine", "ejs");
+
+/**
+ * Note its place in the server file; !
+ * now we can read off of `req.body`
+ * the { extended: false } means that it does not handle `application/json` but only `application/x-www-form-urlencoded`; for that we can use `app.use(express.json())`
+ */
+app.use(express.urlencoded({ extended: false })
+
+
+app.get("/", (req, res) => {
+  res.render("talents/index", { talents });
+});
+
+app.use("/talents", talentsRouter);
+
+app.listen(3001, () => {
+  console.log("Holo talent server listening on port 3001");
+});
+
+mongoose.connect("mongodb://localhost/holoproTalents", () => {
+  console.log("Connected to holoproTalents DB!"),
+    (err) => {
+      console.error("holoproTalents DB error:");
+      console.error(err);
+    };
+});
+```
+
+### 1.31.2. Reading the submitted form data (seeing `.urlencoded()` in action)
+
+Next, import the `Talent` model into `talentRouter`. In the `/talents` index `POST` route, we're gonna be interacting with the DB, so make sure to convert this to an `async` function. Let's try seeing a sample submitted form's data before proceeding with creating a new `Talent` document.
+
+```js
+// routes/talentRouter
+
+const express = require("express");
+const Talent = require("./../models/Talent");
+const router = express.Router();
+
+router.get("/new", (req, res) => {
+  res.render("talents/new");
+});
+
+router.post("/", async (req, res) => {
+  console.log(req.body);
+});
+
+module.exports = router;
+
+
+// outputs to console...
+[Object: null prototype] {
+  name: 'Momosuzu Nene',
+  month: '10',
+  day: '2',
+  year: '2020',
+  tagline: 'Kon-nene!',
+  unitName: '5th Gen - NePoLaBo',
+  youtube: 'https://www.youtube.com/channel/UCAWSyEs_Io8MtpY3m-zqILA',
+  twitter: 'https://twitter.com/momosuzunene',
+  bioBlurb: "Hololive 5th generation's orange representative, Momosuzu Nene aru~"
+}
+```
+
+### 1.31.3. New `Talent` prep & deconstructing this `POST`'s `req.body`
+
+The console output tells us that `req.body` is an `Object`. In Javascript, we can deconstruct collections, like arrays and objects, to make variable creation and value assignment easier.
+
+In this case, deconstruction will allow us omit the leading `req.body` we'd normally use to use the values of the form object.
+
+First, declare a placeholder variable for the new `Talent` to be created; then assign a `const` object using the keys of the focused object.
+
+```js
+// routes/talentsRouter.js
+
+let newTalent;
+const {
+  name,
+  month,
+  day,
+  year,
+  tagline,
+  unitName,
+  youtube,
+  twitter,
+  bioBlurb,
+} = req.body;
+```
+
+Now we can call values using the key as the variable, like `name`, instead of the full `req.body.name`, `month` instead of `req.body.month`, etc.
+
+`newTalent` will come into play later on.
+
+### 1.31.4. Converting the `year`, `month`, and `day` values to a single `Date` value for `debutDate`
+
+Examining the console output, we can see that `month`, `day`, and `year` submitted values are strings. `debutDate` is expecting a value of type `Date`, meaning that we have to use these values to create a `Date`.
+
+There are couple of ways to do this; we're going to convert the form strings to `Numbers` and feed those values into a `new Date()` instance.
+
+According to the [`Date()` MDN docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date), there are five basic forms for the `Date()` constructor:
+
+1. No params, `new Date();`
+2. Time value/timestamp number (milliseconds since 1/1/1970 or UNIX epoch), `new Date(value);`
+3. Timestamp string, `new Date(dateString);`
+4. An existing `Date` object, `new Date(existingDateObj)`
+5. Individual date and time values (in differing specificities)
+
+```js
+// Variations of 5
+// Note that months are INDEXED, so 0-11, NOT 1-12
+
+new Date(year, monthIndex);
+new Date(year, monthIndex, day);
+//...there are other variants that accept hour, minute, second as well
+```
+
+The 5th form is expecting three `Number` inputs; convert each form value from `String` to `Number` by passing each into `Number()`. Remember to pay special care to to `month`, as we need to subtract by `1` to get the month to match its **monthIndex**. Pass each of those values to a `new Date()` instance and we have a `Date` value for `debutDate`.
+
+```js
+let debutDate = new Date(Number(year), Number(month) - 1, Number(day));
+```
+
+### 1.31.5. Creating a new `Talent`
+
+It would be
+
+We can replace the `console.log(req.body)` to add the `Talent` creation logic. First declare `newTalent` _outside the try/catch_ so that it's mutable and available to both the success (`try`) and the fail (`catch`) sides of this `POST` route code.
+
+```js
+
+```
+
 - importing the Talent model
-- telling express to use `urlencoded` back in `server.js`
+- telling express to use `urlencoded` back in `server.js` to access the form's data submission
 - creating the `new Talent`
 
-## Handling the success/failure of the new `Talent` entry
+```js
+// creates the following Talent
+// keep in mind this has not yet been `.save()`d to the DB!
+
+{
+  name: 'Momosuzu Nene',
+  debutDate: 2020-10-02T04:00:00.000Z,
+  tagline: 'Kon-nene!',
+  unitName: '5th Gen - NePoLaBo',
+  youtube: 'https://www.youtube.com/channel/UCAWSyEs_Io8MtpY3m-zqILA',
+  twitter: 'https://twitter.com/momosuzunene',
+  bioBlurb: "Hololive 5th generation's orange representative, Momosuzu Nene aru~",
+  _id: new ObjectId("621032465de568e1156716a5")
+}
+```
+
+## 1.32. Handling the success/failure of the new `Talent` entry
 
 - handling the async `save` function using await & try/catch
 - PASS: redirect to newly created Talent's page, using grabbed id
@@ -1024,6 +1272,10 @@ router.post("/", (req, res) => {});
 - FAIL: re-render submission page, passing down `newTalent` variable as local to express for the EJS to use.
   - modify `_form_fields` to use `talent` submission fields as default values, keeping the form populated on failed creation
 
-## Telling `/talents/new` to use a new, blank Talent as default values on page load
+## 1.33. Telling `/talents/new` to use a new, blank Talent as default values on page load
 
-## Setting up a placeholder for param route `/talents/:id` on PASS `Talent` submission
+## 1.34. Setting up a placeholder for param route `/talents/:id` on PASS `Talent` submission
+
+```
+
+```
