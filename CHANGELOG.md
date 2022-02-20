@@ -1,3 +1,10 @@
+### Version 1.2.0
+- refactor: remove `unitMembers` from required model
+- refactor: remove hyphens; camelCase formField names
+- feat: give express ability to read encoded form data
+- feat: import Talent model; create base Talent instance
+- docs: update lesson guide; add unitMember bonus base info
+
 ### Version 1.0.0
 - initial: created repo; started base files; notes file
 - feat(questions): start questions worksheet
