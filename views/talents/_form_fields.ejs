@@ -4,7 +4,7 @@
 </div>
 
 <div class="form-group">
-  <label for="debut-month" class="form-label">Debut Month</label>
+  <label for="month" class="form-label">Debut Month</label>
   <input
     required
     type="number"
@@ -15,7 +15,7 @@
     class="form-control"
   />
 
-  <label for="debut-day" class="form-label">Debut Day</label>
+  <label for="day" class="form-label">Debut Day</label>
   <input
     required
     type="number"
@@ -26,7 +26,7 @@
     class="form-control"
   />
 
-  <label for="debut-year" class="form-label">Debut Year</label>
+  <label for="year" class="form-label">Debut Year</label>
   <input
     required
     type="number"
@@ -34,6 +34,17 @@
     max="2022"
     name="year"
     id="year"
+    class="form-control"
+  />
+</div>
+
+<div class="form-group">
+  <label for="tagline" class="form-label">Talent Greeting</label>
+  <input
+    required
+    type="text"
+    name="tagline"
+    id="tagline"
     class="form-control"
   />
 </div>
@@ -91,15 +102,15 @@
 </div> -->
 
 <div class="form-group">
-  <label for="unit-name" class="form-label">Talent's Unit</label>
-  <select name="unit-name" id="unit-name" class="form-select">
+  <label for="unitName" class="form-label">Talent's Unit</label>
+  <select name="unitName" id="unitName" class="form-select">
     <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
   </select>
 </div>
 
 <!-- <div class="form-group">
-  <label for="unit-name" class="form-label">Talent's Unit</label>
-  <select name="unit-name" id="unit-name" class="form-select">
+  <label for="unitName" class="form-label">Talent's Unit</label>
+  <select name="unitName" id="unitName" class="form-select">
     <optgroup label="Hololive JP">
       <option value="Gen 0">Gen 0</option>
       <option value="1st Gen">1st Gen</option>
@@ -125,33 +136,33 @@
 </div> -->
 
 <div class="form-group">
-  <label for="yt-link" class="form-label">YouTube Page</label>
+  <label for="youtube" class="form-label">YouTube Page</label>
   <input
     required
     type="text"
-    name="yt-link"
-    id="yt-link"
+    name="youtube"
+    id="youtube"
     class="form-control"
   />
 </div>
 
 <div class="form-group">
-  <label for="twitter-link" class="form-label">Twitter Page</label>
+  <label for="twitter" class="form-label">Twitter Page</label>
   <input
     required
     type="text"
-    name="twitter-link"
-    id="twitter-link"
+    name="twitter"
+    id="twitter"
     class="form-control"
   />
 </div>
 
 <div class="form-group">
-  <label for="markdown" class="form-label">Talent Bio Blurb</label>
+  <label for="bioBlurb" class="form-label">Talent Bio Blurb</label>
   <textarea
     placeholder="You can use markdown here to style this talent's bio blurb!"
-    name="markdown"
-    id="markdown"
+    name="bioBlurb"
+    id="bioBlurb"
     class="form-control"
     rows="5"
   ></textarea>
