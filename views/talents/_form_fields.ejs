@@ -1,5 +1,90 @@
 <div class="form-group">
   <label for="name" class="form-label">Talent Name</label>
+  <input
+    type="text"
+    name="name"
+    id="name"
+    class="form-control"
+    value="<%= talent.name %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="month" class="form-label">Debut Month</label>
+  <input
+    type="number"
+    name="month"
+    id="month"
+    class="form-control"
+    value="<%= talent.month %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="day" class="form-label">Debut Day</label>
+  <input
+    type="number"
+    name="day"
+    id="day"
+    class="form-control"
+    value="<%= talent.day %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="year" class="form-label">Debut Year</label>
+  <input
+    type="number"
+    name="year"
+    id="year"
+    class="form-control"
+    value="<%= talent.year %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="unitName" class="form-label">Talent's Unit</label>
+  <select name="unitName" id="unitName" class="form-select">
+    <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="youtube" class="form-label">YouTube Page</label>
+  <input
+    type="text"
+    name="youtube"
+    id="youtube"
+    class="form-control"
+    value="<%= talent.youtube %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="twitter" class="form-label">Twitter Page</label>
+  <input
+    type="text"
+    name="twitter"
+    id="twitter"
+    class="form-control"
+    value="<%= talent.twitter %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="bioBlurb" class="form-label">Talent Bio Blurb</label>
+  <textarea name="bioBlurb" id="bioBlurb" class="form-control">
+    <%= talent.bioBlurb %>
+  </textarea>
+</div>
+
+<div class="form-group">
+  <button type="submit" class="btn btn-primary">Save</button>
+  <a href="/" class="btn btn-secondary">Cancel</a>
+</div>
+
+<!-- <div class="form-group">
+  <label for="name" class="form-label">Talent Name</label>
   <input required type="text" name="name" id="name" class="form-control" />
 </div>
 
@@ -14,7 +99,9 @@
     id="month"
     class="form-control"
   />
+</div>
 
+<div class="form-group">
   <label for="day" class="form-label">Debut Day</label>
   <input
     required
@@ -25,7 +112,9 @@
     id="day"
     class="form-control"
   />
+</div>
 
+<div class="form-group">
   <label for="year" class="form-label">Debut Year</label>
   <input
     required
@@ -39,101 +128,11 @@
 </div>
 
 <div class="form-group">
-  <label for="tagline" class="form-label">Talent Greeting</label>
-  <input
-    required
-    type="text"
-    name="tagline"
-    id="tagline"
-    class="form-control"
-  />
-</div>
-
-<!-- <div class="form-group">
-  <div class="row">
-    <div class="col">
-      <label for="debut-month" class="form-label">Debut Month</label>
-      <input
-        required
-        type="number"
-        min="1"
-        max="12"
-        name="month"
-        id="month"
-        class="form-control"
-      />
-    </div>
-    <div class="col">
-      <label for="debut-day" class="form-label">Debut Day</label>
-      <input
-        required
-        type="number"
-        min="1"
-        max="31"
-        name="day"
-        id="day"
-        class="form-control"
-      />
-    </div>
-    <div class="col">
-      <label for="debut-year" class="form-label">Debut Year</label>
-      <input
-        required
-        type="number"
-        min="2017"
-        max="2022"
-        name="year"
-        id="year"
-        class="form-control"
-      />
-    </div>
-  </div>
-</div> -->
-
-<!-- <div class="form-group">
-  <label for="debut-date" class="form-label">Debut Date</label>
-  <input
-    type="date"
-    name="debut-date"
-    id="debut-date"
-    class="form-control"
-    required
-  />
-</div> -->
-
-<div class="form-group">
   <label for="unitName" class="form-label">Talent's Unit</label>
   <select name="unitName" id="unitName" class="form-select">
     <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
   </select>
 </div>
-
-<!-- <div class="form-group">
-  <label for="unitName" class="form-label">Talent's Unit</label>
-  <select name="unitName" id="unitName" class="form-select">
-    <optgroup label="Hololive JP">
-      <option value="Gen 0">Gen 0</option>
-      <option value="1st Gen">1st Gen</option>
-      <option value="2nd Gen">2nd Gen</option>
-      <option value="GAMERS">GAMERS</option>
-      <option value="3rd Gen - HoloFantasy">3rd Gen - HoloFantasy</option>
-      <option value="4th Gen - HoloForce">4th Gen - HoloForce</option>
-      <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
-      <option value="6th Gen - Secret Society holoX">
-        6th Gen - Secret Society holoX
-      </option>
-    </optgroup>
-    <optgroup label="Hololive Indonesia">
-      <option value="ID 1st Gen - Area 15">ID 1st Gen - Area 15</option>
-      <option value="ID 2nd Gen - holoro">ID 2nd Gen - holoro</option>
-    </optgroup>
-    <optgroup label="Hololive English">
-      <option value="Myth">Myth</option>
-      <option value="Project: HOPE">Project: HOPE</option>
-      <option value="Council">Council</option>
-    </optgroup>
-  </select>
-</div> -->
 
 <div class="form-group">
   <label for="youtube" class="form-label">YouTube Page</label>
@@ -159,16 +158,10 @@
 
 <div class="form-group">
   <label for="bioBlurb" class="form-label">Talent Bio Blurb</label>
-  <textarea
-    placeholder="You can use markdown here to style this talent's bio blurb!"
-    name="bioBlurb"
-    id="bioBlurb"
-    class="form-control"
-    rows="5"
-  ></textarea>
+  <textarea name="bioBlurb" id="bioBlurb" class="form-control"></textarea>
 </div>
 
 <div class="form-group">
   <button type="submit" class="btn btn-primary">Save</button>
   <a href="/" class="btn btn-secondary">Cancel</a>
-</div>
+</div> -->

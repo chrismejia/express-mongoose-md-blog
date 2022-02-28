@@ -40,10 +40,14 @@
     - [1.26.3. Unit Name](#1263-unit-name)
     - [1.26.4. YT Page Link](#1264-yt-page-link)
     - [1.26.5. Twitter Page Link](#1265-twitter-page-link)
+    - [1.26.6. Talent Bio Blurb](#1266-talent-bio-blurb)
+    - [1.26.7. Form buttons](#1267-form-buttons)
   - [1.27. Building the `_form_fields.ejs` partial view](#127-building-the-_form_fieldsejs-partial-view)
-    - [1.27.1. Talent Name](#1271-talent-name)
-    - [1.27.2. Debut Date](#1272-debut-date)
-    - [1.27.3. Greetings & Introduction](#1273-greetings--introduction)
+    - [1.27.1. Wrapped vs Unwrapped Elements](#1271-wrapped-vs-unwrapped-elements)
+      - [1.27.1.1. Wrapped](#12711-wrapped)
+      - [1.27.1.2. Unwrapped](#12712-unwrapped)
+    - [1.27.2. Talent Name](#1272-talent-name)
+    - [1.27.3. Debut Date](#1273-debut-date)
     - [1.27.4. Unit Name](#1274-unit-name)
     - [1.27.5. YouTube Page](#1275-youtube-page)
     - [1.27.6. Twitter Page](#1276-twitter-page)
@@ -51,6 +55,7 @@
     - [1.27.8. Form submission buttons](#1278-form-submission-buttons)
     - [1.27.9. All put together](#1279-all-put-together)
   - [1.28. Using the `_form_fields` partial](#128-using-the-_form_fields-partial)
+    - [1.28.1. Wrapping the (unwrapped) partial view](#1281-wrapping-the-unwrapped-partial-view)
   - [1.29. Establishing our app's connection to MongoDB via `mongoose`](#129-establishing-our-apps-connection-to-mongodb-via-mongoose)
   - [1.30. Defining the `Talent` model](#130-defining-the-talent-model)
     - [1.30.1. Our form fields (the required ones)](#1301-our-form-fields-the-required-ones)
@@ -62,6 +67,16 @@
     - [1.31.4. Converting the `year`, `month`, and `day` values to a single `Date` value for `debutDate`](#1314-converting-the-year-month-and-day-values-to-a-single-date-value-for-debutdate)
     - [1.31.5. Creating a new `Talent`](#1315-creating-a-new-talent)
   - [1.32. Handling the success/failure of the new `Talent` entry](#132-handling-the-successfailure-of-the-new-talent-entry)
+    - [1.32.1. PASS: `POST`ing a new `Talent`](#1321-pass-posting-a-new-talent)
+      - [1.32.1.1. Saving & Redirecting to a new `Talent` page](#13211-saving--redirecting-to-a-new-talent-page)
+      - [1.32.1.2. Redirecting to a new `Talent` page](#13212-redirecting-to-a-new-talent-page)
+      - [1.32.1.3. Creating a param based `/:id` route](#13213-creating-a-param-based-id-route)
+      - [1.32.1.4. Testing our PASS event flow](#13214-testing-our-pass-event-flow)
+    - [1.32.2. FAIL: Re-populating the failed form with previously submitted data](#1322-fail-re-populating-the-failed-form-with-previously-submitted-data)
+      - [1.32.2.1. Re-rendering the submission form](#13221-re-rendering-the-submission-form)
+      - [1.32.2.2. Passing the failed submission's data to the `_form_fields`](#13222-passing-the-failed-submissions-data-to-the-_form_fields)
+      - [1.32.2.3. Populating the submission form with the failed data](#13223-populating-the-submission-form-with-the-failed-data)
+      - [1.32.2.4. Handling the error on first time visit to `/talents/new`](#13224-handling-the-error-on-first-time-visit-to-talentsnew)
   - [1.33. Telling `/talents/new` to use a new, blank Talent as default values on page load](#133-telling-talentsnew-to-use-a-new-blank-talent-as-default-values-on-page-load)
   - [1.34. Setting up a placeholder for param route `/talents/:id` on PASS `Talent` submission](#134-setting-up-a-placeholder-for-param-route-talentsid-on-pass-talent-submission)
 
@@ -71,14 +86,16 @@
 - Express
 - MongoDB
 - Mongoose
+- HTML via EJS
+- Bootstrap
 
 ## 1.2. Dependencies
 
 ### 1.2.1. Regular
 
-- ejs
 - express
 - mongoose
+- ejs
 
 ### 1.2.2. Development
 
@@ -715,6 +732,7 @@ OR
 
 ### 1.26.3. Unit Name
 
+- string type
 - choosing a predefined option would be best
 - single `<select>` element listing all current holopro units
 
@@ -736,15 +754,52 @@ OR
 
 - single `<input>` field of type `'URL'` to verify url pattern
 
+### 1.26.6. Talent Bio Blurb
+
+- expecting a regular string
+- single `<textarea>`
+
+### 1.26.7. Form buttons
+
+- two buttons, one to submit form data, one to return to home page
+- one `button` of type `submit`
+- one `a` link _styled_ as a `button` that takes you back to `/`
+
 ## 1.27. Building the `_form_fields.ejs` partial view
 
 It's best practice to denote partials with a preceding `_` in their name.
 
-This file will contain different _unwrapped_ HTML elements that make up the fields of our form.
+This file will contain different _unwrapped_ HTML elements that make up the fields of our form. This is because we will be wrapping them in a `<form>` tag on each page that will `include()` this `_form_fields` partial file.
+
+### 1.27.1. Wrapped vs Unwrapped Elements
+
+HTML elements are considered **wrapped** when a parent element contains child elements. They are **unwrapped** when two or more elements are on the same level; they are sibling elements.
+
+This idea of wrapped vs unwrapped is extremely important and applied everywhere through the use of partials in template systems like `ejs`, among others, and through the use of `Component`s and `Fragment`s in `React`, a major front-end framework library.
+
+#### 1.27.1.1. Wrapped
+
+```html
+<div>
+  <h1>This heading and paragraph are wrapped by their parent `<div>` tag.</h1>
+  <p>Any valid HTML tags can wrap any correspondingly valid child tags.</p>
+</div>
+```
+
+#### 1.27.1.2. Unwrapped
+
+```html
+<p>
+  These two paragraphs are unwrapped; they are not nested within a parent tag.
+</p>
+<p>These two tags are on the same document level.</p>
+```
+
+---
 
 Each `group` will contain a `label` and a corresponding `input` element, with certain groups handling additional fields.
 
-### 1.27.1. Talent Name
+### 1.27.2. Talent Name
 
 A `form-group` wrapping a `label` for a required `input` of type `text`.
 
@@ -755,7 +810,7 @@ A `form-group` wrapping a `label` for a required `input` of type `text`.
 </div>
 ```
 
-### 1.27.2. Debut Date
+### 1.27.3. Debut Date
 
 A `form-group` wrapping three sets of `label` for a required `input` of type `number`.
 
@@ -785,25 +840,6 @@ A `form-group` wrapping three sets of `label` for a required `input` of type `nu
     type="number"
     name="year"
     id="debut-year"
-    class="form-control"
-  />
-</div>
-```
-
-### 1.27.3. Greetings & Introduction
-
-A `form-group` wrapping a `label` for a required `input` of type `text`.
-
-```js
-<div class="form-group">
-  <label for="tagline" class="form-label">
-    Talent Name
-  </label>
-  <input
-    required
-    type="text"
-    name="tagline"
-    id="tagline"
     class="form-control"
   />
 </div>
@@ -890,37 +926,17 @@ A `form-group` wrapping a `button` to `submit` all the form field data and a `li
 
 <div class="form-group">
   <label for="month" class="form-label">Debut Month</label>
-  <input
-    required
-    type="number"
-    min="1"
-    max="12"
-    name="month"
-    id="month"
-    class="form-control"
-  />
+  <input required type="number" name="month" id="month" class="form-control" />
+</div>
 
+<div class="form-group">
   <label for="day" class="form-label">Debut Day</label>
-  <input
-    required
-    type="number"
-    min="1"
-    max="31"
-    name="day"
-    id="day"
-    class="form-control"
-  />
+  <input required type="number" name="day" id="day" class="form-control" />
+</div>
 
+<div class="form-group">
   <label for="year" class="form-label">Debut Year</label>
-  <input
-    required
-    type="number"
-    min="2017"
-    max="2022"
-    name="year"
-    id="year"
-    class="form-control"
-  />
+  <input required type="number" name="year" id="year" class="form-control" />
 </div>
 
 <div class="form-group">
@@ -967,11 +983,15 @@ A `form-group` wrapping a `button` to `submit` all the form field data and a `li
 
 We can now use our `_form_fields` partial inside the `<form>` tag in `talents/new`:
 
+### 1.28.1. Wrapping the (unwrapped) partial view
+
 ```html
 <!-- talents/new.ejs -->
 
+<!-- the <form> wrapper -->
 <form action="/talents" method="POST">
-  <%- include("_formFields") %>
+  <%- include("_form_fields") %>
+  <!-- ejs render tags pointed at `_form_fields` -->
   <!-- Notice how there's no root `./` in the path, nor .ejs extension -->
 </form>
 ```
@@ -994,7 +1014,10 @@ const talents = require("./__test__/test_talents");
 const app = express();
 
 /**
- * The connection to the db with subsequent connection notification and error handling. We add the extra DB error line to help us differentiate a DB from any other should multiple things go wrong at once.
+ * The connection to the db with subsequent connection notification
+ * and error handling.
+ * We add the extra DB error line to help us differentiate
+ * a DB from any other should multiple things go wrong at once.
  */
 mongoose.connect("mongodb://localhost/holoproTalents", () => {
   console.log("Connected to holoproTalents DB!"),
@@ -1025,7 +1048,6 @@ Make a top-level directory, `models/`, and create the `Talent.js` model file. To
 
 - Name: `String`, required
 - Debut Date: `Date`, required
-- Tagline: `String`, required
 - Unit Name: `String`, required
   - enum (one of the following): [`"<whichever gen corresponds to selected Talent>"`]
 - YT page link: `String`, required
@@ -1047,7 +1069,6 @@ const talentSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     debutDate: { type: Date, required: true },
-    tagline: { type: String, required: true },
     unitName: { type: String, required: true, enum: ["5th Gen - NePoLaBo"] },
     youtube: { type: String, required: true },
     twitter: { type: String, required: true },
@@ -1167,7 +1188,6 @@ module.exports = router;
   month: '10',
   day: '2',
   year: '2020',
-  tagline: 'Kon-nene!',
   unitName: '5th Gen - NePoLaBo',
   youtube: 'https://www.youtube.com/channel/UCAWSyEs_Io8MtpY3m-zqILA',
   twitter: 'https://twitter.com/momosuzunene',
@@ -1181,23 +1201,14 @@ The console output tells us that `req.body` is an `Object`. In Javascript, we ca
 
 In this case, deconstruction will allow us omit the leading `req.body` we'd normally use to use the values of the form object.
 
-First, declare a placeholder variable for the new `Talent` to be created; then assign a `const` object using the keys of the focused object.
+First, declare a placeholder variable for the new `Talent` to be created; then assign a `const` object using the keys of `req.body`.
 
 ```js
 // routes/talentsRouter.js
 
 let newTalent;
-const {
-  name,
-  month,
-  day,
-  year,
-  tagline,
-  unitName,
-  youtube,
-  twitter,
-  bioBlurb,
-} = req.body;
+const { name, month, day, year, unitName, youtube, twitter, bioBlurb } =
+  req.body;
 ```
 
 Now we can call values using the key as the variable, like `name`, instead of the full `req.body.name`, `month` instead of `req.body.month`, etc.
@@ -1237,15 +1248,20 @@ let debutDate = new Date(Number(year), Number(month) - 1, Number(day));
 
 It would be
 
-We can replace the `console.log(req.body)` to add the `Talent` creation logic. First declare `newTalent` _outside the try/catch_ so that it's mutable and available to both the success (`try`) and the fail (`catch`) sides of this `POST` route code.
+First declare `newTalent` _outside the_ `try/catch` so that it's mutable and available to both the success (`try`) and the fail (`catch`) sides of this `POST` route code.
 
 ```js
-
+let newTalent = new Talent({
+  name,
+  debutDate,
+  unitName,
+  youtube,
+  twitter,
+  bioBlurb,
+});
 ```
 
-- importing the Talent model
-- telling express to use `urlencoded` back in `server.js` to access the form's data submission
-- creating the `new Talent`
+We can now check to see the output of the `Talent` before trying any `.save()` operations by placing a `console.log(newTalent)`.
 
 ```js
 // creates the following Talent
@@ -1254,23 +1270,268 @@ We can replace the `console.log(req.body)` to add the `Talent` creation logic. F
 {
   name: 'Momosuzu Nene',
   debutDate: 2020-10-02T04:00:00.000Z,
-  tagline: 'Kon-nene!',
   unitName: '5th Gen - NePoLaBo',
   youtube: 'https://www.youtube.com/channel/UCAWSyEs_Io8MtpY3m-zqILA',
   twitter: 'https://twitter.com/momosuzunene',
   bioBlurb: "Hololive 5th generation's orange representative, Momosuzu Nene aru~",
-  _id: new ObjectId("621032465de568e1156716a5")
+  _id: new ObjectId("6219630bcdfcb38a4187bb0f")
 }
 ```
 
 ## 1.32. Handling the success/failure of the new `Talent` entry
 
-- handling the async `save` function using await & try/catch
-- PASS: redirect to newly created Talent's page, using grabbed id
-- create `param` based `:id` route in `talentsRouter`
-  - no res/req actions yet
-- FAIL: re-render submission page, passing down `newTalent` variable as local to express for the EJS to use.
-  - modify `_form_fields` to use `talent` submission fields as default values, keeping the form populated on failed creation
+### 1.32.1. PASS: `POST`ing a new `Talent`
+
+If the new `Talent` document is created successfully, we want to:
+
+1. `.save()` this document to the DB
+2. redirect to newly created Talent's page, using grabbed id
+3. create `param` based `:id` route in `talentsRouter`
+   - no res/req actions yet
+
+#### 1.32.1.1. Saving & Redirecting to a new `Talent` page
+
+In the `try` portion of the `try/catch`, we will `await` the `.save()` operation's completion, and then use the `_id` of the new `Talent` to redirect to a page dedicated to them.
+
+```js
+// routes/talentsRouter.js
+
+router.post("/", async (req, res) => {
+  // ... omitted setup
+
+  try {
+    newTalent = await newTalent.save();
+  } catch (error) {
+    // error code here
+  }
+});
+```
+
+#### 1.32.1.2. Redirecting to a new `Talent` page
+
+We can use the new `Talent`'s `_id` to redirect to their page.
+
+```js
+// routes/talentsRouter.js
+
+router.post("/", async (req, res) => {
+  // ... omitted setup
+
+  try {
+    newTalent = await newTalent.save();
+    res.redirect(`/talents/${newTalent.id}`); // <- the redirect
+  } catch (error) {
+    // error code here
+  }
+});
+```
+
+#### 1.32.1.3. Creating a param based `/:id` route
+
+Now we build a placeholder param-based route after our `POST '/'` route that will tell us what the id of the `Talent` we are viewing is. We will be fully building out this route later on.
+
+```js
+// routes/talentRouter.js
+
+router.get("/:id", (req, res) => {
+  res.send(`Current talent id is ${req.params.id}`);
+});
+```
+
+#### 1.32.1.4. Testing our PASS event flow
+
+With the events of our PASS sequence set up, we can now test the form to see if everything works properly. Fill the form out, hit the `Submit` button, and if it all works, you should get redirected to a new page:
+
+```
+Page URL: http://localhost:3001/talents/6219684211690313d16cc8ec
+
+Page Response Text: Current talent id is 6219684211690313d16cc8ec
+```
+
+### 1.32.2. FAIL: Re-populating the failed form with previously submitted data
+
+When we fail to successfully create a `Talent`, we want to:
+
+1. re-render submission page, passing down `newTalent` variable as local to express for the EJS to use.
+2. modify `_form_fields` to use `talent` submission fields as default values, keeping the form populated on failed creation
+
+#### 1.32.2.1. Re-rendering the submission form
+
+For debug purposes, we're going to add two `console.error` at the start of the `catch` of the `try/catch` section.
+
+One will tell us that there is an error specifically relating to the creation of a new talent, a useful statement because we will be reusing the `_form_fields` partial and constantly clicking the `Submit` button.
+
+The second will tell us the creation error.
+
+```js
+// routes/talentRouter.js
+
+// setup omitted...
+
+try {
+  newTalent = await newTalent.save();
+  res.redirect(`/talents/${newTalent.id}`);
+} catch (error) {
+  console.error(
+    "There has been has an error in trying to create a new Talent."
+  );
+  console.error(error);
+}
+```
+
+#### 1.32.2.2. Passing the failed submission's data to the `_form_fields`
+
+To prevent the user from needing to enter everything once more, we will pass down the previous submission's data to the page.
+
+```js
+// routes/talentRouter.js
+
+// setup omitted...
+
+try {
+  newTalent = await newTalent.save();
+  res.redirect(`/talents/${newTalent.id}`);
+} catch (error) {
+  console.error(
+    "There has been has an error in trying to create a new Talent."
+  );
+  console.error(error);
+  res.render("talents/new", { talent: newTalent });
+}
+```
+
+#### 1.32.2.3. Populating the submission form with the failed data
+
+**NB: One exception here, the `<select>` dropdown; must work out how to pass down value to `<option>` tag.**
+
+In `_form_fields.ejs`, we can use the `{ talent: newTalent }` data passed down to `/talents/new` at render time by adding `value` fields to each form input field and assigning each their corresponding submitted form data field.
+
+```html
+<!-- views/talents/_form_fields -->
+
+<div class="form-group">
+  <label for="name" class="form-label">Talent Name</label>
+  <input
+    type="text"
+    name="name"
+    id="name"
+    class="form-control"
+    value="<%= talent.name %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="month" class="form-label">Debut Month</label>
+  <input
+    type="number"
+    name="month"
+    id="month"
+    class="form-control"
+    value="<%= talent.month %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="day" class="form-label">Debut Day</label>
+  <input
+    type="number"
+    name="day"
+    id="day"
+    class="form-control"
+    value="<%= talent.day %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="year" class="form-label">Debut Year</label>
+  <input
+    type="number"
+    name="year"
+    id="year"
+    class="form-control"
+    value="<%= talent.year %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="unitName" class="form-label">Talent's Unit</label>
+  <select name="unitName" id="unitName" class="form-select">
+    <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="youtube" class="form-label">YouTube Page</label>
+  <input
+    type="text"
+    name="youtube"
+    id="youtube"
+    class="form-control"
+    value="<%= talent.youtube %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="twitter" class="form-label">Twitter Page</label>
+  <input
+    type="text"
+    name="twitter"
+    id="twitter"
+    class="form-control"
+    value="<%= talent.twitter %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="bioBlurb" class="form-label">Talent Bio Blurb</label>
+  <textarea name="bioBlurb" id="bioBlurb" class="form-control">
+    <%= talent.bioBlurb %>
+  </textarea>
+</div>
+
+<div class="form-group">
+  <button type="submit" class="btn btn-primary">Save</button>
+  <a href="/" class="btn btn-secondary">Cancel</a>
+</div>
+```
+
+#### 1.32.2.4. Handling the error on first time visit to `/talents/new`
+
+With everything saved, refresh or go to `/talents/new`; you'll see an `ReferenceError` similar to this:
+
+```js
+ReferenceError: C:\Users\Colombo\Programming\teaching-js\markdown-blog-lesson\views\talents\new.ejs:22
+    20|
+    21|       <form action="/talents" method="POST">
+ >> 22|         <%- include("_form_fields") %>
+    23|       </form>
+    24|     </div>
+    25|   </body>
+
+
+C:\Users\Colombo\Programming\teaching-js\markdown-blog-lesson\views\talents\_form_fields.ejs:8
+    6|     id="name"
+    7|     class="form-control"
+ >> 8|     value="<%= talent.name %>"
+    9|   />
+    10| </div>
+    11|
+
+
+talent is not defined
+```
+
+What this means is that `talent` is **not defined** when we first load the new `Talent` submission page, only after a failed submission. To fix this, pass down a new, blank `Talent` as local data to `/talents/new`.
+
+```js
+// routes/talentRouter.js
+
+router.get("/new", (req, res) => {
+  res.render("talents/new", { talent: new Talent() });
+});
+```
+
+Save and reload; the form on `/talents/new` now renders correctly with initial blank fields.
 
 ## 1.33. Telling `/talents/new` to use a new, blank Talent as default values on page load
 
@@ -1279,3 +1540,9 @@ We can replace the `console.log(req.body)` to add the `Talent` creation logic. F
 ```
 
 ```
+
+```
+
+```
+
+https://youtu.be/1NrHkjlWVhM?t=2020
