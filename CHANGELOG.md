@@ -1,3 +1,7 @@
+### Version 1.3.0
+- feat: add form PASS, FAIL functionality prune tagline from project, docs prune commented form fields to extra _more_form_fields file add blank Talent base to first-load form_fields PASS: redirect to created talent page based on document id; create universal `/talents/:id` route FAIL: send req.body to re-rendered form fields page
+- feat: start marked, slugify, method-override sections
+
 ### Version 1.2.0
 - refactor: remove `unitMembers` from required model
 - refactor: remove hyphens; camelCase formField names
