@@ -1,7 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
+const Talent = require("./models/Talent");
 const talentsRouter = require("./routes/talentsRouter");
-const talents = require("./__test__/test_talents");
 
 const app = express();
 
@@ -10,11 +11,13 @@ const app = express();
  */
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
 
 /**
  * Index Routing
  */
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  const talents = await Talent.find().sort({ debutDate: "desc" });
   res.render("talents/index", { talents });
 });
 

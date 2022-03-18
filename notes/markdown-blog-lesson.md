@@ -1,6 +1,6 @@
-# 1. Markdown Dossier Lesson
+# 1. Holopro Talent CRUD App
 
-- [1. Markdown Dossier Lesson](#1-markdown-dossier-lesson)
+- [1. Holopro Talent CRUD App](#1-holopro-talent-crud-app)
   - [1.1. Tech stack](#11-tech-stack)
   - [1.2. Dependencies](#12-dependencies)
     - [1.2.1. Regular](#121-regular)
@@ -75,10 +75,55 @@
     - [1.32.2. FAIL: Re-populating the failed form with previously submitted data](#1322-fail-re-populating-the-failed-form-with-previously-submitted-data)
       - [1.32.2.1. Re-rendering the submission form](#13221-re-rendering-the-submission-form)
       - [1.32.2.2. Passing the failed submission's data to the `_form_fields`](#13222-passing-the-failed-submissions-data-to-the-_form_fields)
-      - [1.32.2.3. Populating the submission form with the failed data](#13223-populating-the-submission-form-with-the-failed-data)
+      - [1.32.2.3. Populating the submission form fields with the failed data](#13223-populating-the-submission-form-fields-with-the-failed-data)
       - [1.32.2.4. Handling the error on first time visit to `/talents/new`](#13224-handling-the-error-on-first-time-visit-to-talentsnew)
-  - [1.33. Telling `/talents/new` to use a new, blank Talent as default values on page load](#133-telling-talentsnew-to-use-a-new-blank-talent-as-default-values-on-page-load)
-  - [1.34. Setting up a placeholder for param route `/talents/:id` on PASS `Talent` submission](#134-setting-up-a-placeholder-for-param-route-talentsid-on-pass-talent-submission)
+      - [1.32.2.5. Telling the user that missing fields are required](#13225-telling-the-user-that-missing-fields-are-required)
+        - [1.32.2.5.1. `<input>`](#132251-input)
+        - [1.32.2.5.2. `<select>`](#132252-select)
+        - [1.32.2.5.3. `<textarea>`](#132253-textarea)
+        - [1.32.2.5.4. All together](#132254-all-together)
+    - [1.32.3. Further form guidance (number input limiting, url validation)](#1323-further-form-guidance-number-input-limiting-url-validation)
+  - [1.33. `<select>` field - refactoring, passing values after failed submissions, mapping `<option>`s using JSON data](#133-select-field---refactoring-passing-values-after-failed-submissions-mapping-options-using-json-data)
+    - [1.33.1. Examining the _`selected`_ attribute](#1331-examining-the-selected-attribute)
+    - [1.33.2. Programmatically creating `<option>`s from JSON data](#1332-programmatically-creating-options-from-json-data)
+    - [1.33.3. Mapping out the `<option>`s](#1333-mapping-out-the-options)
+      - [1.33.3.1. Just the mapped `<select>`](#13331-just-the-mapped-select)
+      - [1.33.3.2. The entire `<select> 'form-group'`](#13332-the-entire-select-form-group)
+    - [1.33.4. Testing with a failed `Talent` submission](#1334-testing-with-a-failed-talent-submission)
+    - [1.33.5. BONUS: Organizing groups of options into `<optgroup>`](#1335-bonus-organizing-groups-of-options-into-optgroup)
+      - [1.33.5.1. Before the `branch` addition](#13351-before-the-branch-addition)
+      - [1.33.5.2. Adding `branch` data, and restructuring](#13352-adding-branch-data-and-restructuring)
+      - [1.33.5.3. Modifying the `_form_fields <option>` map](#13353-modifying-the-_form_fields-option-map)
+        - [1.33.5.3.1. Before `branch` map](#133531-before-branch-map)
+        - [1.33.5.3.2. Before `branch` map](#133532-before-branch-map)
+  - [1.34. Rendering a `Talent` document on `/talents/:id`](#134-rendering-a-talent-document-on-talentsid)
+    - [1.34.1. Updated `/:id` route code](#1341-updated-id-route-code)
+    - [1.34.2. Talent Page Base Template](#1342-talent-page-base-template)
+  - [1.35. Rendering `Talent`s on the index route](#135-rendering-talents-on-the-index-route)
+  - [1.36. Sorting our `Talent`s by `debutDate`](#136-sorting-our-talents-by-debutdate)
+  - [1.37. Refactoring Index `Talent` cards](#137-refactoring-index-talent-cards)
+  - [1.38. Add a link to each `Talent` page](#138-add-a-link-to-each-talent-page)
+  - [1.39. Adding the `marked` & `slugify` libraries](#139-adding-the-marked--slugify-libraries)
+    - [1.39.1. `marked` npm page](#1391-marked-npm-page)
+    - [1.39.2. `slugify` npm page](#1392-slugify-npm-page)
+      - [1.39.2.1. What is a slug?](#13921-what-is-a-slug)
+      - [1.39.2.2. Is There a Difference Between a URL Slug and a URL?](#13922-is-there-a-difference-between-a-url-slug-and-a-url)
+  - [1.40. Using `marked` & `slugify`](#140-using-marked--slugify)
+  - [1.41. Adding `.pre()` middleware to create a slug](#141-adding-pre-middleware-to-create-a-slug)
+  - [1.42. Changing the `/:id` param routes to use the `slug` field](#142-changing-the-id-param-routes-to-use-the-slug-field)
+    - [1.42.1. Old `GET '/:id'` param routing](#1421-old-get-id-param-routing)
+    - [1.42.2. New `GET '/:slug'` param routing](#1422-new-get-slug-param-routing)
+  - [1.43. Changing the redirect from `talent.id` to `talent.slug`](#143-changing-the-redirect-from-talentid-to-talentslug)
+    - [1.43.1. Before - using `id`](#1431-before---using-id)
+    - [1.43.2. After - using `slug`](#1432-after---using-slug)
+  - [1.44. Viewing `Talent`s using the new `slug`-based link](#144-viewing-talents-using-the-new-slug-based-link)
+    - [1.44.1. Before - using `id`](#1441-before---using-id)
+    - [1.44.2. After - using the new `slug` schema field](#1442-after---using-the-new-slug-schema-field)
+  - [1.45. Creating a `DELETE '/:id'` route](#145-creating-a-delete-id-route)
+    - [1.45.1. Installing `method-override`](#1451-installing-method-override)
+    - [1.45.2. Importing and using `method-override`](#1452-importing-and-using-method-override)
+  - [1.46. Adding a button to `DELETE` a `Talent`](#146-adding-a-button-to-delete-a-talent)
+  - [1.47. Enabling markdown on our pages](#147-enabling-markdown-on-our-pages)
 
 ## 1.1. Tech stack
 
@@ -445,7 +490,7 @@ The `card` component offered by Bootstrap has multiple sub-components available 
 <div class="card mt-4">
   <div class="card-body">
     <div class="card-title"><%= talent.name %></div>
-    <div class="card-subtitle text-muted mb-2"><%= talent.debuted %></div>
+    <div class="card-subtitle text-muted mb-2"><%= talent.debutDate %></div>
   </div>
 </div>
 <% }) %>
@@ -542,7 +587,7 @@ module.exports = talents;
         <%= talent.name %>
       </div>
       <div class="card-subtitle text-muted mb-2">
-        <%= talent.debuted.toLocaleDateString() %>
+        <%= talent.debutDate.toLocaleDateString() %>
       </div>
     </div>
   </div>
@@ -561,7 +606,7 @@ Bootstrap has a `card-text` component we can use to render a talent's tagline. W
   <div class="card-body">
     <div class="card-title"><%= talent.name %></div>
     <div class="card-subtitle text-muted mb-2">
-      <%= talent.debuted.toLocaleDateString() %>
+      <%= talent.debutDate.toLocaleDateString() %>
     </div>
     <div class="card-text mb-2"><%= talent.tagline %></div>
     <!-- tagline added -->
@@ -1136,7 +1181,9 @@ app.set("view engine", "ejs");
 /**
  * Note its place in the server file; !
  * now we can read off of `req.body`
- * the { extended: false } means that it does not handle `application/json` but only `application/x-www-form-urlencoded`; for that we can use `app.use(express.json())`
+ * the { extended: false } means that it does not handle `application/json`,
+ * only `application/x-www-form-urlencoded`;
+ * for that we can use `app.use(express.json())`
  */
 app.use(express.urlencoded({ extended: false })
 
@@ -1162,20 +1209,19 @@ mongoose.connect("mongodb://localhost/holoproTalents", () => {
 
 ### 1.31.2. Reading the submitted form data (seeing `.urlencoded()` in action)
 
-Next, import the `Talent` model into `talentRouter`. In the `/talents` index `POST` route, we're gonna be interacting with the DB, so make sure to convert this to an `async` function. Let's try seeing a sample submitted form's data before proceeding with creating a new `Talent` document.
+Let's try seeing a sample submitted form's data before proceeding with creating a new `Talent` document.
 
 ```js
 // routes/talentRouter
 
 const express = require("express");
-const Talent = require("./../models/Talent");
 const router = express.Router();
 
 router.get("/new", (req, res) => {
   res.render("talents/new");
 });
 
-router.post("/", async (req, res) => {
+router.post("/", (req, res) => {
   console.log(req.body);
 });
 
@@ -1197,6 +1243,8 @@ module.exports = router;
 
 ### 1.31.3. New `Talent` prep & deconstructing this `POST`'s `req.body`
 
+Import the `Talent` model into `talentRouter`. In the `/talents` index `POST` route, we're gonna be interacting with the DB, so make sure to convert this to an `async` function.
+
 The console output tells us that `req.body` is an `Object`. In Javascript, we can deconstruct collections, like arrays and objects, to make variable creation and value assignment easier.
 
 In this case, deconstruction will allow us omit the leading `req.body` we'd normally use to use the values of the form object.
@@ -1204,11 +1252,34 @@ In this case, deconstruction will allow us omit the leading `req.body` we'd norm
 First, declare a placeholder variable for the new `Talent` to be created; then assign a `const` object using the keys of `req.body`.
 
 ```js
-// routes/talentsRouter.js
+// routes/talentRouter
 
-let newTalent;
-const { name, month, day, year, unitName, youtube, twitter, bioBlurb } =
-  req.body;
+const express = require("express");
+const router = express.Router();
+
+router.get("/new", (req, res) => {
+  res.render("talents/new");
+});
+
+router.post("/", async (req, res) => {
+  const { name, month, day, year, unitName, youtube, twitter, bioBlurb } =
+  req.body
+});
+
+module.exports = router;
+
+
+// outputs to console...
+[Object: null prototype] {
+  name: 'Momosuzu Nene',
+  month: '10',
+  day: '2',
+  year: '2020',
+  unitName: '5th Gen - NePoLaBo',
+  youtube: 'https://www.youtube.com/channel/UCAWSyEs_Io8MtpY3m-zqILA',
+  twitter: 'https://twitter.com/momosuzunene',
+  bioBlurb: "Hololive 5th generation's orange representative, Momosuzu Nene aru~"
+}
 ```
 
 Now we can call values using the key as the variable, like `name`, instead of the full `req.body.name`, `month` instead of `req.body.month`, etc.
@@ -1246,9 +1317,9 @@ let debutDate = new Date(Number(year), Number(month) - 1, Number(day));
 
 ### 1.31.5. Creating a new `Talent`
 
-It would be
+First, try creating a `newTalent` using data fields from `req.body` and the processed `debutDate`.
 
-First declare `newTalent` _outside the_ `try/catch` so that it's mutable and available to both the success (`try`) and the fail (`catch`) sides of this `POST` route code.
+We can now check to see the output of the `Talent` before trying any `.save()` operations by placing a `console.log(newTalent)`.
 
 ```js
 let newTalent = new Talent({
@@ -1259,12 +1330,12 @@ let newTalent = new Talent({
   twitter,
   bioBlurb,
 });
+console.log(newTalent);
 ```
 
-We can now check to see the output of the `Talent` before trying any `.save()` operations by placing a `console.log(newTalent)`.
+...creates the following `Talent`...
 
 ```js
-// creates the following Talent
 // keep in mind this has not yet been `.save()`d to the DB!
 
 {
@@ -1284,7 +1355,7 @@ We can now check to see the output of the `Talent` before trying any `.save()` o
 
 If the new `Talent` document is created successfully, we want to:
 
-1. `.save()` this document to the DB
+1. `.save()` this document to the DB; convert to `Talent.create`
 2. redirect to newly created Talent's page, using grabbed id
 3. create `param` based `:id` route in `talentsRouter`
    - no res/req actions yet
@@ -1301,8 +1372,19 @@ router.post("/", async (req, res) => {
 
   try {
     newTalent = await newTalent.save();
+
+    // OR
+
+    let newTalent = await Talent.create({
+      name,
+      debutDate,
+      unitName,
+      youtube,
+      twitter,
+      bioBlurb,
+    });
   } catch (error) {
-    // error code here
+    // TODO: code on error
   }
 });
 ```
@@ -1321,7 +1403,7 @@ router.post("/", async (req, res) => {
     newTalent = await newTalent.save();
     res.redirect(`/talents/${newTalent.id}`); // <- the redirect
   } catch (error) {
-    // error code here
+    // TODO: code on error
   }
 });
 ```
@@ -1396,15 +1478,15 @@ try {
     "There has been has an error in trying to create a new Talent."
   );
   console.error(error);
-  res.render("talents/new", { talent: newTalent });
+  res.render("talents/new", { talent: req.body });
 }
 ```
 
-#### 1.32.2.3. Populating the submission form with the failed data
+#### 1.32.2.3. Populating the submission form fields with the failed data
 
 **NB: One exception here, the `<select>` dropdown; must work out how to pass down value to `<option>` tag.**
 
-In `_form_fields.ejs`, we can use the `{ talent: newTalent }` data passed down to `/talents/new` at render time by adding `value` fields to each form input field and assigning each their corresponding submitted form data field.
+In `_form_fields.ejs`, we can use the `{ talent: req.body }` data passed down to `/talents/new` at render time by adding `value` fields to each form input field and assigning each their corresponding submitted form data field.
 
 ```html
 <!-- views/talents/_form_fields -->
@@ -1533,16 +1615,914 @@ router.get("/new", (req, res) => {
 
 Save and reload; the form on `/talents/new` now renders correctly with initial blank fields.
 
-## 1.33. Telling `/talents/new` to use a new, blank Talent as default values on page load
+#### 1.32.2.5. Telling the user that missing fields are required
 
-## 1.34. Setting up a placeholder for param route `/talents/:id` on PASS `Talent` submission
+Currently, if we try to `submit` a blank form, we receive a number of errors on the validation side in the console. These errors are generated by `mongoose`.
 
+```shell
+There has been has an error in trying to create a new Talent.
+Error: Talent validation failed: name: Path `name` is required., youtube: Path `youtube` is required., twitter: Path `twitter` is required.
+
+... more error text here
 ```
 
+However, the end user, the person using the site who should never see these console message, nor understand them, simply sees the page refresh with no input as to what happened or why their submission failed.
+
+We can provide them some on-page feedback by adding the `required` attribute to each of the form fields.
+
+This becomes especially important later down the road, if we expand the form and decide to make those new fields optional inputs.
+
+##### 1.32.2.5.1. `<input>`
+
+```html
+<input
+  required
+  type="text"
+  name="twitter"
+  id="twitter"
+  class="form-control"
+  value="<%= talent.twitter %>"
+/>
 ```
 
+##### 1.32.2.5.2. `<select>`
+
+```html
+<select required name="unitName" id="unitName" class="form-select">
+  <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
+</select>
 ```
 
+##### 1.32.2.5.3. `<textarea>`
+
+```html
+<textarea required name="bioBlurb" id="bioBlurb" class="form-control">
+  <%= talent.bioBlurb %>
+</textarea>
 ```
 
-https://youtu.be/1NrHkjlWVhM?t=2020
+##### 1.32.2.5.4. All together
+
+```html
+<div class="form-group">
+  <label for="name" class="form-label">Talent Name</label>
+  <input
+    required
+    type="text"
+    name="name"
+    id="name"
+    class="form-control"
+    value="<%= talent.name %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="month" class="form-label">Debut Month</label>
+  <input
+    required
+    type="number"
+    name="month"
+    id="month"
+    class="form-control"
+    value="<%= talent.month %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="day" class="form-label">Debut Day</label>
+  <input
+    required
+    type="number"
+    name="day"
+    id="day"
+    class="form-control"
+    value="<%= talent.day %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="year" class="form-label">Debut Year</label>
+  <input
+    required
+    type="number"
+    name="year"
+    id="year"
+    class="form-control"
+    value="<%= talent.year %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="unitName" class="form-label">Talent's Unit</label>
+  <select name="unitName" id="unitName" class="form-select">
+    <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="youtube" class="form-label">YouTube Page</label>
+  <input
+    required
+    type="text"
+    name="youtube"
+    id="youtube"
+    class="form-control"
+    value="<%= talent.youtube %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="twitter" class="form-label">Twitter Page</label>
+  <input
+    required
+    type="text"
+    name="twitter"
+    id="twitter"
+    class="form-control"
+    value="<%= talent.twitter %>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="bioBlurb" class="form-label">Talent Bio Blurb</label>
+  <textarea required name="bioBlurb" id="bioBlurb" class="form-control">
+    <%= talent.bioBlurb %>
+  </textarea>
+</div>
+
+<div class="form-group">
+  <button type="submit" class="btn btn-primary">Save</button>
+  <a href="/" class="btn btn-secondary">Cancel</a>
+</div>
+```
+
+### 1.32.3. Further form guidance (number input limiting, url validation)
+
+## 1.33. `<select>` field - refactoring, passing values after failed submissions, mapping `<option>`s using JSON data
+
+Currently, we have one `<select>` dropdown that contains only one `<option>`.
+
+```html
+<div class="form-group">
+  <label for="unitName" class="form-label">Talent's Unit</label>
+  <select name="unitName" id="unitName" class="form-select">
+    <option value="5th Gen - NePoLaBo">5th Gen - NePoLaBo</option>
+  </select>
+</div>
+```
+
+### 1.33.1. Examining the _`selected`_ attribute
+
+In `_form_fields.ejs`, comment out the exist `<select>` block, and then add the following in its place:
+
+```html
+<!-- views/talents/_form_fields.ejs -->
+
+<select>
+  <option>This option is displayed.</option>
+  <option>This option is viewable when the dropdown is active.</option>
+</select>
+```
+
+The default `<option>` displayed when a `<select>` is rendered is the **top** `<option>` within the `<select>`:
+
+This can be overridden though; if an `<option>` has the `selected` attribute, it'll be displayed on the **first render** of a page. Subsequent renders will display the first `<option>`.
+
+```html
+<!-- views/talents/_form_fields.ejs -->
+
+<select>
+  <option>
+    This option is not shown on the first render, but second render after, it'll
+    be shown, even though it's the top `option`.
+  </option>
+  <option>This option is viewable when the dropdown is active.</option>
+  <option selected>
+    This option has the `selected` attribute, so it'll be shown on first render.
+  </option>
+  <option>This option is viewable when the dropdown is active.</option>
+</select>
+```
+
+That's fine though, since all we need to is display the `<option>` that was chosen during the latest failed `Talent` submission; we can assume that any further renders of the `Talent` submission page would be the result of additional failed submissions.
+
+### 1.33.2. Programmatically creating `<option>`s from JSON data
+
+We can look back at `index.ejs` to see an example of how we can map over data to create parts of a template.
+
+```html
+<!-- views/talents/index -->
+
+<div class="row">
+  <% talents.forEach(talent => { %>
+  <div class="col-4">
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title"><%= talent.name %></h5>
+        <div class="card-subtitle text-muted mb-2"><%= talent.unitName %></div>
+      </div>
+      <div class="card-footer">
+        <a href="/talents/<%= talent.id %>" class="card-link">View Talent </a>
+      </div>
+    </div>
+  </div>
+  <% }) %>
+</div>
+```
+
+Here, we called on the `talents` data passed down by `express` into this route to create each `talent` card.
+
+We will create a new data source from a new folder, `/data/holopro_units.json`, to pull from and pass down to the `_form_fields` template to create `<option>` elements with the correct value, display text, and `selected` status.
+
+```json
+// data/holopro_units.json
+
+[
+  "Gen 0",
+  "1st Gen",
+  "2nd Gen",
+  "hololive GAMERS",
+  "3rd Gen -Fantasy-",
+  "4th Gen -holoForce",
+  "5th Gen -NePoLaBo-",
+  "6th Gen -Secret Society holoX-",
+  "ID 1st Gen -AREA 15-",
+  "ID 2nd Gen -holoro-",
+  "EN 1st Gen -Myth-",
+  "EN 2nd Gen -Council-"
+]
+```
+
+Import this into `talentRouter.ejs` and pass it down as another key-data pair into two places:
+
+- The form's first-time render: `GET "/new"`
+- The form's render-on-fail: the `catch` side render argument of the `POST "/"` route.
+
+```js
+// routes/talentRouter
+
+// import up top
+const holoUnits = require("../data/holopro_units.json");
+
+
+// updated first-time render
+router.get("/new", (req, res) => {
+  res.render("talents/new", { talent: new Talent(), holoUnits });
+});
+
+// passing to re-render on fail submission
+catch (error) {
+  console.error(
+    "There has been has an error in trying to create a new Talent."
+  );
+  console.error(error);
+  res.render("talents/new", { talent: req.body, holoUnits });
+}
+```
+
+### 1.33.3. Mapping out the `<option>`s
+
+Now that we have access to the array of units, we can map the options in `_form_fields.ejs`. There are three fields on each `<option>` we need to handle:
+
+1. `value`
+2. `selected`
+3. `option text`
+
+Replace the test `<select>` and add an `ejs` for-each like so:
+
+#### 1.33.3.1. Just the mapped `<select>`
+
+```js
+// views/talents/_form_fields
+
+<select name="unitName" id="unitName" class="form-select">
+  <% holoUnits.forEach(holounit => { %>
+  <option
+    value="<%= holounit %>"
+    <%= talent.unitName === holounit ? "selected" : "" %>
+  >
+    <%= holounit %>
+  </option>
+  <% }) %>
+</select>
+```
+
+#### 1.33.3.2. The entire `<select> 'form-group'`
+
+```js
+// views/talents/_form_fields
+
+<div class="form-group">
+  <label for="unitName" class="form-label">Talent's Unit</label>
+  <select name="unitName" id="unitName" class="form-select">
+    <% holoUnits.forEach(holounit => { %>
+    <option
+      value="<%= holounit %>"
+      <%= talent.unitName === holounit ? "selected" : "" %>
+    >
+      <%= holounit %>
+    </option>
+    <% }) %>
+  </select>
+</div>
+```
+
+### 1.33.4. Testing with a failed `Talent` submission
+
+Open up the inspector, click on the `<select>` and see that none of the `<option>`s have the _`selected`_ attribute.
+
+Try submitting a bad `Talent`, then check again. The `unitName` previously chosen for submission will now have the _`selected`_ attribute, and be rendered with the other failed submission data.
+
+### 1.33.5. BONUS: Organizing groups of options into `<optgroup>`
+
+We have successfully created 12 `<option>`s, 8 are HoloJP, 2 are Holo ID, 2 are Holo EN. It would be good if we could provide further group information to break up the solid block of 12 options. We can do this by adding `branch` info and restructuring `holopro_units.json`.
+
+#### 1.33.5.1. Before the `branch` addition
+
+```json
+[
+  "Gen 0",
+  "1st Gen",
+  "2nd Gen",
+  "hololive GAMERS",
+  "3rd Gen -Fantasy-",
+  "4th Gen -holoForce",
+  "5th Gen -NePoLaBo-",
+  "6th Gen -Secret Society holoX-",
+  "ID 1st Gen -AREA 15-",
+  "ID 2nd Gen -holoro-",
+  "EN 1st Gen -Myth-",
+  "EN 2nd Gen -Council-",
+  "Stars 1st Gen",
+  "Stars 2nd Gen -SunTempo-",
+  "Stars 3rd Gen -TriNero-"
+]
+```
+
+#### 1.33.5.2. Adding `branch` data, and restructuring
+
+```json
+[
+  {
+    "branch": "hololive",
+    "units": [
+      "Gen 0",
+      "1st Gen",
+      "2nd Gen",
+      "hololive GAMERS",
+      "3rd Gen -Fantasy-",
+      "4th Gen -holoForce",
+      "5th Gen -NePoLaBo-",
+      "6th Gen -Secret Society holoX-"
+    ]
+  },
+  {
+    "branch": "hololive Indonesia",
+    "units": ["ID 1st Gen -AREA 15-", "ID 2nd Gen -holoro-"]
+  },
+  {
+    "branch": "hololive English",
+    "units": ["EN 1st Gen -Myth-", "EN 2nd Gen -Council-"]
+  },
+  {
+    "branch": "HOLOSTARS",
+    "units": [
+      "Stars 1st Gen",
+      "Stars 2nd Gen -SunTempo-",
+      "Stars 3rd Gen -TriNero-"
+    ]
+  }
+]
+```
+
+#### 1.33.5.3. Modifying the `_form_fields <option>` map
+
+##### 1.33.5.3.1. Before `branch` map
+
+```js
+  <select name="unitName" id="unitName" class="form-select">
+    <% holoUnits.forEach(holounit => { %>
+    <option
+      value="<%= holounit %>"
+      <%= talent.unitName === holounit ? "selected" : "" %>
+    >
+      <%= holounit %>
+    </option>
+    <% }) %>
+  </select>
+```
+
+##### 1.33.5.3.2. Before `branch` map
+
+```js
+<select name="unitName" id="unitName" class="form-select">
+  <% holoUnits.forEach(({branch, units}) => { %>
+    <optgroup label="<%= branch %>">
+      <% units.forEach(holounit => { %>
+        <option
+          value="<%= holounit %>"
+          <%= talent.unitName === holounit ? "selected" : "" %>
+        >
+          <%= holounit %>
+        </option>
+      <% }) %>
+    </optgroup>
+  <% }) %>
+</select>
+```
+
+Now we have `<optgroup>`s in place to better organizes the plethora of `unitName`s.
+
+## 1.34. Rendering a `Talent` document on `/talents/:id`
+
+With both the **PASS** and **FAIL** `Talent` submissions handled, we can modify our **param based `/:id` route** to render the data of the document created by the successful submission.
+
+To do this, we need to:
+
+1. Make the `/:id` route's `(req, res)` callback `async`.
+2. Fetch the `Talent` using the `/:id` param in a Model `findById` query
+3. Redirect to home page if there is NO `Talent` document with the searched `_id`
+4. Render the single `Talent` EJS template and pass that fetched `Talent` data to it
+5. Create the basic `Talent` EJS layout
+
+### 1.34.1. Updated `/:id` route code
+
+```js
+// routes/talentRouter.js
+
+router.get("/:id", async (req, res) => {
+  try {
+    const talent = await Talent.findById(req.params.id);
+
+    if (talent === null) {
+      res.redirect("/");
+    }
+
+    res.render("talents/show", { talent });
+  } catch (error) {
+    console.error(error);
+  }
+});
+```
+
+### 1.34.2. Talent Page Base Template
+
+```html
+<!-- views/talents/show -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <title><%= talent.name %></title>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="display-4"><%= talent.name %></h2>
+      <p class="lead mb-4">
+        <%= talent.unitName %>, Debuted <%=
+        talent.debutDate.toLocaleDateString() %>
+      </p>
+
+      <div class="mb-4"><p><%= talent.bioBlurb %></p></div>
+
+      <h5>Social Media</h5>
+      <div class="row mb-4">
+        <div class="col">
+          <a
+            href="<%= talent.youtube %>"
+            class="btn btn-danger btn-block"
+            target="_blank"
+            >Youtube Page</a
+          >
+        </div>
+        <div class="col">
+          <a
+            href="<%= talent.twitter %>"
+            class="btn btn-primary btn-block"
+            target="_blank"
+            >Twitter Page</a
+          >
+        </div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col">
+          <a href="/" class="btn btn-secondary">All Talents</a>
+          <a href="/talents/edit/<%= talent.id %>" class="btn btn-info"
+            >Edit this Talent</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+```
+
+## 1.35. Rendering `Talent`s on the index route
+
+We can get rid of the test `Talent` data that we used in the `GET /` route by importing the `Talent` model and `.find()`ing all available `Talent`s to render onto the page.
+
+Additionally, we need to remove the test data we used to populate the index page with placeholder layouts.
+
+Remember that DB interactions are `async`, so make the `(req, res)` index route callback `async` and `await` the `.find()` call.
+
+**NB: old property name change; `talent.debuted` is now `talent.debutDate`**
+
+```js
+// server.js
+
+// const talents = require("./__test__/test_talents"); <- Remove this local import!
+
+app.get("/", async (req, res) => {
+  const talents = await Talent.find();
+  res.render("talents/index", { talents });
+});
+```
+
+```html
+<!-- views/talents/index -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+
+    <title>Holo Talent Server</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mb-4">Our Talents</h1>
+      <a href="/talents/new" class="btn btn-success">New Talent</a>
+
+      <% talents.forEach(talent => { %>
+      <div class="card mt-4">
+        <div class="card-body">
+          <h5 class="card-title"><%= talent.name %></h5>
+          <div class="card-subtitle text-muted mb-2">
+            <%= talent.debutDate.toLocaleDateString() %>
+          </div>
+          <div class="card-text mb-2"><%= talent.tagline %></div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  </body>
+</html>
+```
+
+## 1.36. Sorting our `Talent`s by `debutDate`
+
+We can chain a `.sort()` call to our `await Talent.find()` and sort by `debutDate`, from earlier to latest, by passing in `"asc"` as its sort key-value.
+
+```js
+// server.js
+
+app.get("/", async (req, res) => {
+  const talents = await Talent.find().sort({ debutDate: "asc" });
+  res.render("talents/index", { talents });
+});
+```
+
+## 1.37. Refactoring Index `Talent` cards
+
+We should take a second to modify the layout of our `Talent` cards on the index route. Let's do the following:
+
+1. Wrap the `talents.forEach()` call in a `<div class="row">`
+2. Contain an individual `Talent` card's width to one-third (4cols/12cols) of this row
+3. Reduce the size of the `Talent`'s name in each card
+4. Replace each `Talent`'s `debutDate` with their `unitName`
+5. Prune the unused `talent.tagline` value from the card
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+
+    <title>Holo Talent Server</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mb-4">Our Talents</h1>
+      <a href="/talents/new" class="btn btn-success">New Talent</a>
+
+      <div class="row">
+        <% talents.forEach(talent => { %>
+        <div class="col-4">
+          <div class="card mt-4">
+            <div class="card-body">
+              <h5 class="card-title"><%= talent.name %></h5>
+              <div class="card-subtitle text-muted mb-2">
+                <%= talent.unitName %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  </body>
+</html>
+```
+
+## 1.38. Add a link to each `Talent` page
+
+Within each card on the index route, add a link to under the `<div class="card-body">`.
+
+```html
+<!-- views/talents/index -->
+<!-- <row> snippet -->
+
+<div class="row">
+  <% talents.forEach(talent => { %>
+  <div class="col-4">
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title"><%= talent.name %></h5>
+        <div class="card-subtitle text-muted mb-2"><%= talent.unitName %></div>
+      </div>
+      <div class="card-footer">
+        <a href="/talents/<%= talent.id %>" class="card-link"> View Talent </a>
+      </div>
+    </div>
+  </div>
+  <% }) %>
+</div>
+```
+
+## 1.39. Adding the `marked` & `slugify` libraries
+
+It's now time to add the `marked` and `slugify` libraries to our project.
+
+```shell
+npm i marked slugify
+```
+
+### 1.39.1. `marked` [npm page](https://www.npmjs.com/package/marked)
+
+From their [docs](https://marked.js.org/):
+
+> 1. built for speed
+> 2. a low-level markdown compiler for parsing markdown without caching or blocking for long periods of time
+> 3. light-weight while implementing all markdown features from the supported flavors & specifications
+> 4. available as a command line interface (CLI) and running in client- or server-side JavaScript projects
+
+### 1.39.2. `slugify` [npm page](https://www.npmjs.com/package/slugify)
+
+Removes unsupported characters from URLs to use as slugs.
+
+#### 1.39.2.1. What is a slug?
+
+A URL slug is the part of the URL after the last backslash.
+
+Sometimes you may see a webpage URL with a chain of characters, letters, or numbers. These slugs can be confusing to users, and they may hesitate before clicking. Those kinds of slugs don’t look very trustworthy.
+
+A good URL slug also helps the Google crawl bots understand how to get to your page and confirms the content on it.
+
+#### 1.39.2.2. Is There a Difference Between a URL Slug and a URL?
+
+- The URL **slug** is the last part of a full URL.
+- The URL itself is the entire web address for the page.
+
+## 1.40. Using `marked` & `slugify`
+
+In `Talent.js`, import `marked` and `slugify` for use in our `talentSchema`
+
+Next, add a new field `slug` to the `talentSchema`. It will be a `String`, that is `required`, and will also be `unique`.
+
+```js
+// models/Talent.js
+
+const mongoose = require("mongoose");
+const marked = require("marked");
+const slugify = require("slugify");
+
+const talentSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    debutDate: { type: Date, required: true },
+    unitName: { type: String, required: true },
+    youtube: { type: String, required: true },
+    twitter: { type: String, required: true },
+    bioBlurb: { type: String, required: true },
+    slug: { type: String, required: true, unique: true }, // <-- added to the schema
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Talent", talentSchema);
+```
+
+## 1.41. Adding `.pre()` middleware to create a slug
+
+We can use a `.pre()` middleware before validation to `talentSchema` to handle slug creation. We'll use the `Talent`'s name to create the slug. Pass the `name` into the `slugify` function, as well as an `options` object that:
+
+- makes the slug lowercase
+- applies `strict` rules; stripping special characters like `:` from the slug
+
+Remember that all `.pre()` and `.post()` middleware needs to accept a `next` parameter in order to move to the next function in the chain when `next()` is called.
+
+```js
+// models/Talent.js
+
+talentSchema.pre("validate", function (next) {
+  if (this.name) {
+    this.slug = slugify(this.name, { lower: true, strict: true });
+  }
+
+  next();
+});
+
+module.exports = mongoose.model("Talent", talentSchema);
+```
+
+**NB: Create a new `Talent` that will have this new `slug` field code is complete so future examples work!**
+
+## 1.42. Changing the `/:id` param routes to use the `slug` field
+
+Instead of `findById`, we will by searching using the new `slug` field get the `Talent` data.
+
+### 1.42.1. Old `GET '/:id'` param routing
+
+```js
+// routes/talentRouter
+
+router.get("/:id", async (req, res) => {
+  try {
+    const talent = await Talent.findById(req.params.id);
+
+    if (talent === null) {
+      res.redirect("/");
+    }
+
+    res.render("talents/show", { talent });
+  } catch (error) {
+    console.error(error);
+  }
+});
+```
+
+### 1.42.2. New `GET '/:slug'` param routing
+
+```js
+// routes/talentRouter
+
+router.get("/:slug, async (req, res) => {
+  try {
+    const talent = await Talent.findOne({ slug: req.params.id });
+
+    if (talent === null) {
+      res.redirect("/");
+    }
+
+    res.render("talents/show", { talent });
+  } catch (error) {
+    console.error(error);
+  }
+});
+```
+
+**Question: Why do we use `Talent.findOne` instead of `Talent.find()` here?**
+
+## 1.43. Changing the redirect from `talent.id` to `talent.slug`
+
+In our `POST '/'` route, we redirect using the `Talent`'s `_id` when a successful submission is completed; we can change this to use the `slug`.
+
+### 1.43.1. Before - using `id`
+
+```js
+res.redirect(`/talents/${newTalent.id}`);
+```
+
+### 1.43.2. After - using `slug`
+
+```js
+res.redirect(`/talents/${newTalent.slug}`);
+```
+
+## 1.44. Viewing `Talent`s using the new `slug`-based link
+
+Head back to the index page, refresh, and try to visit a `Talent` and the page should fail.
+
+To get it working, we need to change the link in the `index` template to point to the `slug`-based link.
+
+### 1.44.1. Before - using `id`
+
+```html
+<div class="card-footer">
+  <button href="/talents/<%= talent.id %>" class="btn btn-primary btn-sm">
+    View Talent
+  </button>
+</div>
+```
+
+### 1.44.2. After - using the new `slug` schema field
+
+```html
+<div class="card-footer">
+  <button href="/talents/<%= talent.slug %>" class="btn btn-primary btn-sm">
+    View Talent
+  </button>
+</div>
+```
+
+Notice the new nice looking slug in action.
+
+## 1.45. Creating a `DELETE '/:id'` route
+
+On the index page, notice that the links for the current `Talents` don't work, because these `Talents` were added to the DB _before_ the `slug` was created, and thus cannot link to their page using the new `slug` based link.
+
+We need to a way to delete these bad `Talent` entries from the front-end.
+
+There's a caveat here; the method we need is `DELETE`, but:
+
+- `<a>` links can only `GET`
+- `<form>` can only `GET` or `POST`
+
+So we need an override of a sort if we want to **use our form to `DELETE`**.
+
+### 1.45.1. Installing `method-override`
+
+```shell
+npm i method-override
+```
+
+### 1.45.2. Importing and using `method-override`
+
+```js
+// server.js
+
+// imports
+const methodOverride = require("method-override");
+
+/**
+ * Express settings
+ */
+app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
+```
+
+```js
+// routes/talentRouter
+
+router.delete("/:id", async (req, res) => {
+  await Talent.findByIdAndDelete(req.params.id);
+  res.redirect("/");
+});
+```
+
+## 1.46. Adding a button to `DELETE` a `Talent`
+
+Since Google would crawl over every link in our page, it would be terrible simply placed a button to `DELETE` in each `Talent` card, since it would delete every `Talent` when that link button is accessed. Instead we need to place a delete button inside **a nested `<form>`.**
+
+We give that `<form>` an action that contains a URL query, `"?"` with the method override string we detailed in `server.js`, and finally pass the `DELETE` method.
+
+```html
+<!-- index.ejs -->
+<!-- the card footer snippet -->
+
+<div class="card-footer">
+  <button href="/talents/<%= talent.slug %>" class="btn btn-primary btn-sm">
+    View Talent
+  </button>
+
+  <form
+    action="/talents/<%= talents.id %>?_method=DELETE"
+    method="POST"
+    class="d-inline"
+  >
+    <button type="submit" class="btn btn-danger btn-sm">Delete Talent</button>
+  </form>
+</div>
+```
+
+## 1.47. Enabling markdown on our pages
