@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const marked = require("marked");
 const slugify = require("slugify");
 const holoUnits = require("../data/holopro_units.json");
-const { get } = require("express/lib/response");
 
 const talentSchema = new mongoose.Schema(
   {
@@ -30,11 +29,13 @@ function getBranchName(unitName) {
   return null;
 }
 
-talentSchema.pre("validate", () => {
-  if (this.unitName) {
-    const branchBase = getBranchName(this.unitName);
-    this.slug = slugify(asf, { lower: true, strict: true });
+talentSchema.pre("validate", function (next) {
+  if (this.name) {
+    // const branchBase = getBranchName(this.unitName);
+    // this.slug = slugify(this.name, { lower: true, strict: true });
+    this.slug = slugify(this.name, { lower: true, strict: true });
   }
+  next();
 });
 
 module.exports = mongoose.model("Talent", talentSchema);
