@@ -8,6 +8,12 @@ router.get("/new", (req, res) => {
   res.render("talents/new", { talent: new Talent(), holoUnits });
 });
 
+router.get("/edit/:id", async (req, res) => {
+  const talent = await Talent.findById(req.params.id);
+
+  res.render("talents/edit", { talent, holoUnits });
+});
+
 router.post("/", async (req, res) => {
   const { name, month, day, year, unitName, youtube, twitter, bioBlurb } =
     req.body;
@@ -46,6 +52,8 @@ router.get("/:id", async (req, res) => {
     console.error(error);
   }
 });
+
+router.put("/:id", (req, res) => {});
 
 router.delete("/:id", async (req, res) => {
   await Talent.findByIdAndDelete(req.params.id);

@@ -124,6 +124,20 @@
     - [1.45.2. Importing and using `method-override`](#1452-importing-and-using-method-override)
   - [1.46. Adding a button to `DELETE` a `Talent`](#146-adding-a-button-to-delete-a-talent)
   - [1.47. Enabling markdown on our pages](#147-enabling-markdown-on-our-pages)
+    - [1.47.1. What is HTML sanitization?](#1471-what-is-html-sanitization)
+    - [1.47.2. How we're going to sanitize our markdown](#1472-how-were-going-to-sanitize-our-markdown)
+      - [1.47.2.1. `dompurify`](#14721-dompurify)
+        - [1.47.2.1.1. What does it do?](#147211-what-does-it-do)
+      - [1.47.2.2. `jsdom`](#14722-jsdom)
+    - [1.47.3. What is the DOM?](#1473-what-is-the-dom)
+  - [1.48. Creating our DOM purifier and DOM Handler](#148-creating-our-dom-purifier-and-dom-handler)
+  - [1.49. Creating a field for our sanitized HTML](#149-creating-a-field-for-our-sanitized-html)
+  - [1.50. Parsing our markdown to be sanitized](#150-parsing-our-markdown-to-be-sanitized)
+    - [1.50.1. Test Markdown](#1501-test-markdown)
+  - [1.51. Adding our sanitized HTML to the `Talent` page](#151-adding-our-sanitized-html-to-the-talent-page)
+  - [1.52. Adding edit route functionality](#152-adding-edit-route-functionality)
+  - [1.53. Creating the `edit` view](#153-creating-the-edit-view)
+  - [1.54. Creating the `PUT` route](#154-creating-the-put-route)
 
 ## 1.1. Tech stack
 
@@ -2526,3 +2540,253 @@ We give that `<form>` an action that contains a URL query, `"?"` with the method
 ```
 
 ## 1.47. Enabling markdown on our pages
+
+Looking at our newly slugged `Talent`s, we can see that even though we're inputting `bioBlurb` as multiple lines, it's all being combined into one large paragraph.
+
+That's because our form's `bioBlurb` is stringified and has not been compiled to markdown.
+
+The process of compiling `bioBlurb` to markdown will create HTML that we can render on each `Talent` page.
+
+The big problem lies here lies in malicious HTML code. To address we need to sanitize our HTML output before we render it to our page.
+
+### 1.47.1. What is HTML sanitization?
+
+From [Wikipedia](https://en.wikipedia.org/wiki/HTML_sanitization):
+
+> In data sanitization, HTML sanitization is the process of examining an HTML document and producing a new HTML document that preserves only whatever tags are designated "safe" and desired. HTML sanitization can be used to protect against attacks such as cross-site scripting (XSS) by sanitizing any HTML code submitted by a user.
+>
+> #### Details
+>
+> Basic tags for changing fonts are often allowed, such as `<b>`, `<i>`, `<u>`, `<em>`, and `<strong>` while more advanced tags such as `<script>`, `<object>`, `<embed>`, and `<link>` are removed by the sanitization process. Also potentially dangerous attributes such as the onclick attribute are removed in order to prevent malicious code from being injected.
+>
+> Sanitization is typically performed by using either a whitelist or a blacklist approach. Leaving a safe HTML element off a whitelist is not so serious; it simply means that that feature will not be included post-sanitation. On the other hand, if an unsafe element is left off a blacklist, then the vulnerability will not be sanitized out of the HTML output. An out-of-date blacklist can therefore be dangerous if new, unsafe features have been introduced to the HTML Standard.
+>
+> Further sanitization can be performed based on rules which specify what operation is to be performed on the subject tags. Typical operations include removal of the tag itself while preserving the content, preserving only the textual content of a tag or forcing certain values on attributes.
+
+### 1.47.2. How we're going to sanitize our markdown
+
+We're going to need a few more libraries:
+
+```shell
+npm i dompurify js-dom
+```
+
+#### 1.47.2.1. [`dompurify`](https://github.com/cure53/DOMPurify)
+
+> DOMPurify is a DOM-only, super-fast, uber-tolerant XSS sanitizer for HTML, MathML and SVG.
+
+##### 1.47.2.1.1. What does it do?
+
+> DOMPurify sanitizes HTML and prevents XSS attacks. You can feed DOMPurify with string full of dirty HTML and it will return a string (unless configured otherwise) with clean HTML. DOMPurify will strip out everything that contains dangerous HTML and thereby prevent XSS attacks and other nastiness. It's also damn bloody fast. We use the technologies the browser provides and turn them into an XSS filter. The faster your browser, the faster DOMPurify will be.
+
+#### 1.47.2.2. [`jsdom`](https://github.com/jsdom/jsdom)
+
+> jsdom is a pure-JavaScript implementation of many web standards, notably the WHATWG DOM and HTML Standards, for use with Node.js.
+>
+> In general, the goal of the project is to emulate enough of a subset of a web browser to be useful for testing and scraping real-world web applications.
+
+### 1.47.3. What is the DOM?
+
+From [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction):
+
+> The Document Object Model (DOM) is the data representation of the objects that comprise the structure and content of a document on the web. This guide will introduce the DOM, look at how the DOM represents an HTML document in memory and how to use APIs to create web content and applications.
+
+Visit the link for more details.
+
+## 1.48. Creating our DOM purifier and DOM Handler
+
+Import the DOM purifier and just the JSDOM portion of `jsdom` for use in `Talent`. Then create the purifier by passing in a `new JSDOM` window object
+
+```js
+// Talent.js
+
+const createDomPurify = require("dompurify");
+const { JSDOM } = require("jsdom");
+
+// purifier
+const dompurify = createDomPurify(new JSDOM().window);
+```
+
+## 1.49. Creating a field for our sanitized HTML
+
+We can now create a `sanitizedHTML` field on `Talent` to render our markdown form input:
+
+```js
+// Talent.js
+
+const talentSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    debutDate: { type: Date, required: true },
+    unitName: { type: String, required: true },
+    youtube: { type: String, required: true },
+    twitter: { type: String, required: true },
+    bioBlurb: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
+    sanitizedHTML: { type: String, required: true }, // <- added new field
+  },
+  { timestamps: true }
+);
+```
+
+## 1.50. Parsing our markdown to be sanitized
+
+**IMPORT CHANGE: `const marked = require("marked")` becomes `const { marked } = require("marked")`**
+
+In the `.pre("validate")` function we wrote, add a section to parse our markdown in 3 steps:
+
+1. Parse the markdown input first
+2. Sanitize the parsed markdown
+3. Assign the sanitized markdown to the `sanitizedHTML` field on `Talent` schema
+
+**NB: Create a new `Talent` to verify the changes!**
+
+```js
+// Talent.js
+
+talentSchema.pre("validate", function (next) {
+  if (this.name) {
+    this.slug = slugify(this.name, { lower: true, strict: true });
+  }
+
+  // Parse, sanitize, and store our markdown HTML
+  if (this.bioBlurb) {
+    const parsedMarkdown = marked.parse(this.bioBlurb);
+    const sanitizedMarkdown = dompurify.sanitize(parsedMarkdown);
+    this.sanitizedHTML = sanitizedMarkdown;
+  }
+
+  next();
+});
+```
+
+### 1.50.1. Test Markdown
+
+```
+*星街すいせい*
+
+## "It's your shooting star, your diamond in the rough, idol VTuber Hoshimachi Suisei!"
+
+A forever18 VTuber who deeply loves singing and idols.
+
+Her dream is to one day hold a live concert in Tokyo Budokan.
+```
+
+We get as an output:
+
+```
+*星街すいせい* ## "It's your shooting star, your diamond in the rough, idol VTuber Hoshimachi Suisei!" A forever18 VTuber who deeply loves singing and idols. Her dream is to one day hold a live concert in Tokyo Budokan.
+```
+
+## 1.51. Adding our sanitized HTML to the `Talent` page
+
+In `show.ejs`, output the raw, unescaped value to the page:
+
+```js
+// show.ejs
+
+<div class="mb-4"><p><%- talent.sanitizedHTML %></p></div>
+```
+
+## 1.52. Adding edit route functionality
+
+Copy the `"/new"` route as a base, and change to `edit`. Find the `Talent` by its id, then pass it to a new, `edit` view template.
+
+```js
+router.get("/edit/:id", async (req, res) => {
+  const talent = await Talent.findById(req.params.id);
+  res.render("talents/edit", { talent, holoUnits });
+});
+```
+
+## 1.53. Creating the `edit` view
+
+Copy over the `new` view, then change the titling to reflect its purpose.
+
+In the `<form>` action, make sure to add an `PUT` method override:
+
+```html
+<!-- edit.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+
+    <title>Edit <%= talent.name %> data</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Edit <%= talent.name %> data</h1>
+
+      <form action="/talents/<%= talent.id %>?_method=PUT" method="POST">
+        <%- include("_form_fields") %>
+      </form>
+    </div>
+  </body>
+</html>
+```
+
+## 1.54. Creating the `PUT` route
+
+Create a base `PUT` route that will use `/:id` as a param:
+
+```js
+// talentRouter.js
+
+router.put("/:id", (req, res) => {});
+```
+
+This route will share a lot of the logic that the `GET /:id` route does, so let's create a function at the end of `talentsRouter` to consolidate all the common functionality.
+
+It's going to return the `(req, res)` middleware function present in **BOTH routes.**
+
+```js
+// talentsRouter.js
+
+function saveArticleAndRedirect(path) {
+  return (req, res) => {};
+}
+```
+
+Copy the logic from `GET '/:id'`, and pass the `path` to the fail render
+
+```js
+// talentsRouter.js
+
+function saveArticleAndRedirect(path) {
+  return (req, res) => {
+    const { name, month, day, year, unitName, youtube, twitter, bioBlurb } =
+      req.body;
+
+    let debutDate = new Date(Number(year), Number(month) - 1, Number(day));
+
+    try {
+      let newTalent = await Talent.create({
+        name,
+        debutDate,
+        unitName,
+        youtube,
+        twitter,
+        bioBlurb,
+      });
+      res.redirect(`/talents/${newTalent.id}`);
+    } catch (error) {
+      console.error(
+        "There has been has an error in trying to create a new Talent."
+      );
+      console.error(error);
+      res.render(`talents/${path}`, { talent: req.body, holoUnits });
+    }
+  };
+}
+```
